@@ -38,7 +38,7 @@ module Schleuder
       # TODO: make key-related methods a concern, so we don't have to go
       # through the list and neither re-implement the methods here.
       # Prefix '0x' to force GnuPG to match only hex-values, not UIDs.
-      list.keys("0x#{self.fingerprint}").first
+      @key ||= list.keys("0x#{self.fingerprint}").first
     end
 
     def send_mail(mail, incoming_mail=nil)
