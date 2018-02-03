@@ -5,11 +5,13 @@ require 'charlock_holmes'
 
 require_relative '../schleuder'
 require 'schleuder/cli/subcommand_fix'
+require 'schleuder/cli/cli_helper'
 require 'schleuder/cli/schleuder_cert_manager'
 require 'schleuder/cli/cert'
 
 module Schleuder
   class Cli < Thor
+    include CliHelper
 
     register(Cert,
              'cert',
@@ -132,11 +134,6 @@ module Schleuder
     end
 
     no_commands do
-      def fatal(msg, exitcode=1)
-        error("Error: #{msg}")
-        exit exitcode
-      end
-
       KEYWORDS = {
         'add-member' => 'subscribe',
         'delete-member' => 'unsubscribe',
