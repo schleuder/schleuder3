@@ -7,7 +7,7 @@ describe 'subscription via api' do
     @email = 'someone@localhost'
   end
 
-  it 'doesn\'t subscribe new member without authorization' do
+  it 'doesn\'t subscribe new member without authentication' do
     parameters = {'list_id' => @list.id, :email => @email}
 
     expect(@list.subscriptions.size).to be(0)

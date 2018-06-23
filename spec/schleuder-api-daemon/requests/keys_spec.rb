@@ -7,11 +7,11 @@ describe 'keys via api' do
   end
 
   context 'list' do
-    it 'doesn\'t list keys without authorization' do
+    it 'doesn\'t list keys without authentication' do
       get "/keys.json?list_id=#{@list.id}"
       expect(last_response.status).to be 401
     end
-    it 'does list keys with authorization' do
+    it 'does list keys with authentication' do
       authorize!
       get "/keys.json?list_id=#{@list.id}"
       expect(last_response.status).to be 200
@@ -19,7 +19,7 @@ describe 'keys via api' do
     end
   end
   context 'check' do
-    it 'doesn\'t check keys without authorization' do
+    it 'doesn\'t check keys without authentication' do
       get "/keys/check_keys.json?list_id=#{@list.id}"
       expect(last_response.status).to be 401
     end
@@ -42,11 +42,11 @@ describe 'keys via api' do
   end
 
   context 'export' do
-    it 'doesn\'t export keys without authorization' do
+    it 'doesn\'t export keys without authentication' do
       get "/keys.json?list_id=#{@list.id}"
       expect(last_response.status).to be 401
     end
-    it 'does list keys with authorization' do
+    it 'does list keys with authentication' do
       authorize!
       get "/keys.json?list_id=#{@list.id}"
       expect(last_response.status).to be 200
@@ -55,14 +55,14 @@ describe 'keys via api' do
   end
 
   context 'import' do
-    it 'doesn\'t import keys without authorization' do
+    it 'doesn\'t import keys without authentication' do
       parameters = {'list_id' => @list.id, 'keymaterial' => File.read('spec/fixtures/bla_foo_key.txt') }
       expect {
         post '/keys.json', parameters.to_json
         expect(last_response.status).to be 401
       }.to change{ @list.keys.length }.by 0
     end
-    it 'does list keys with authorization' do
+    it 'does list keys with authentication' do
       authorize!
       parameters = {'list_id' => @list.id, 'keymaterial' => File.read('spec/fixtures/bla_foo_key.txt') }
       expect {
@@ -78,14 +78,14 @@ describe 'keys via api' do
       @list.import_key(File.read("spec/fixtures/bla_foo_key.txt"))
     end
 
-    it 'doesn\'t delete keys without authorization' do
+    it 'doesn\'t delete keys without authentication' do
       expect {
         delete "/keys/0xEBDBE899251F2412.json?list_id=#{@list.id}"
         expect(last_response.status).to be 401
       }.to change{ @list.keys.length }.by 0
       @list.delete_key('0xEBDBE899251F2412')
     end
-    it 'does delete keys with authorization' do
+    it 'does delete keys with authentication' do
       authorize!
       expect {
         delete "/keys/0xEBDBE899251F2412.json?list_id=#{@list.id}"
