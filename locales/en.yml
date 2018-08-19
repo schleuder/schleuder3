@@ -60,6 +60,7 @@ en:
       not_writable: is not writable
       not_readable: is not readable
     keyword_admin_only: The keyword '%{keyword}' may only be used by list-admin.
+    unknown_keyword: The given keyword '%{keyword}' is unknown. Please check its spelling or the documentation.
     keyword_x_stop_missing: "Your message lacked the keyword 'X-STOP'. If you use keywords in a message, you must indicate with 'X-STOP' where to stop looking for further keywords."
     key_generation_failed: Generating the OpenPGP key pair for %{listname} failed for unknown reasons. Please check the list-directory ('%{listdir}') and the log-files.
     key_adduid_failed: "Adding a user-ID to the OpenPGP key failed with this message:\n%{errmsg}"
@@ -74,13 +75,22 @@ en:
     too_many_matching_keys: |
       Too many matching keys for '%{input}':
       %{key_strings}
-  plugins:
-    unknown_keyword: Unknown keyword '%{keyword}'.
-    plugin_failed: Running keyword '%{keyword}' caused an unknown error. System-admins have been notified.
-    keyword_admin_notify_request: "%{signer} sent the keyword '%{keyword}' with the values '%{arguments}' and received this response:"
-    keyword_admin_notify_request_without_arguments: "%{signer} sent the keyword '%{keyword}' and received this response:"
-    keyword_admin_notify_lists: "%{signer} used the keyword '%{keyword}' with the values '%{arguments}' in a message sent to the list."
-    keyword_admin_notify_lists_without_arguments: "%{signer} used the keyword '%{keyword}' in a message sent to the list."
+  keyword_handlers:
+    handler_failed: Running keyword '%{keyword}' caused an unknown error. System-admins have been notified.
+    keyword_admin_notify:
+      request: |
+        %{sender} sent this keyword:
+
+        %{keyword}: %{arguments}
+
+
+        ...and received this response:
+
+        %{response}
+      list: |
+        %{sender} sent this keyword to the list:
+
+        %{keyword}: %{arguments}
     key_management:
       deleted: |
         This key was deleted:
@@ -125,6 +135,7 @@ en:
 
         Or, to fetch a key keys by URL:
         X-FETCH-KEY: https://example.org/keys/mykey.asc
+      no_content_found: Your message did not contain any attachments nor text content. Therefore no key could be imported.
     resend:
       not_resent_no_keys: Resending to <%{email}> failed (%{all_keys} keys found, of which %{usable_keys} can be used. Unencrypted sending not allowed).
       not_resent_encrypted_no_keys: Resending as encrypted email to <%{email}> failed (%{all_keys} keys found, of which %{usable_keys} can be used).
@@ -210,7 +221,9 @@ en:
         X-SUBSCRIBE: new-subscription@hostname 0xB3D190D5235C74E1907EACFE898F2C91E2E6E1F3 true false
 
         If you omit the optional arguments, the subscription has no key assigned, is not an admin, and has the delivery of list-emails enabled.
-    signatures_attached: Find the signatures attached.
+    sign_this:
+      signatures_attached: Find the signatures attached.
+      no_content_found: Your message did not contain any attachments nor text content. Therefore nothing could be signed.
     list_management:
       no_logfile: No logfile could be found for %{listname}. (This might be caused by a high log-level and the absence of errors.)
       logfile_attached: The logfile for %{listname} is attached.

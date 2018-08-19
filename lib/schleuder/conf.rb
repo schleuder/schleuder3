@@ -17,7 +17,7 @@ module Schleuder
     DEFAULTS = {
       'lists_dir' => '/var/lib/schleuder/lists',
       'listlogs_dir' => '/var/lib/schleuder/lists',
-      'plugins_dir' => '/etc/schleuder/plugins',
+      'keyword_handlers_dir' => '/usr/local/lib/schleuder/schleuder/keyword_handlers',
       'filters_dir' => '/usr/local/lib/schleuder/filters',
       'log_level' => 'warn',
       'superadmin' => 'root@localhost',
@@ -62,8 +62,8 @@ module Schleuder
       instance.config['listlogs_dir']
     end
 
-    def self.plugins_dir
-      instance.config['plugins_dir']
+    def self.keyword_handlers_dir
+      instance.config['keyword_handlers_dir']
     end
 
     def self.filters_dir

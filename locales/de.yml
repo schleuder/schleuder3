@@ -60,6 +60,7 @@ de:
       not_writable: ist nicht beschreibbar
       not_readable: ist nicht lesbar
     keyword_admin_only: Das Schlüsselwort '%{keyword}' darf nur von Listen-Admins verwendet werden.
+    unknown_keyword: Das verwendete Schlüsselwort '%{input}' ist unbekannt. Bitte prüfe seine Schreibweise oder die Dokumentation.
     keyword_x_stop_missing: "In deiner Email fehlte das Schlüsselwort 'X-STOP'. Wenn du Schlüsselwörter benutzt musst du mit 'X-STOP' zeigen, wo die Suche nach weiteren Schlüsselwörtern gestoppt werden soll."
     key_generation_failed: Das Erzeugen des OpenPGP-Schlüsselpaares für %{listname} ist aus unbekannten Gründen fehlgeschlagen. Bitte prüfe das Listen-Verzeichnis ('%{listdir}') und die Log-Dateien.
     key_adduid_failed: "Das Hinzufügen einer User-ID zum OpenPGP-Schlüssel ist mit folgender Meldung fehlgeschlagen:\n%{errmsg}"
@@ -74,13 +75,22 @@ de:
     too_many_matching_keys: |
       Zu viele Schlüssel gefunden für '%{input}':
       %{key_strings}
-  plugins:
-    unknown_keyword: Unbekanntes Schlüsselwort '%{keyword}'.
-    plugin_failed: Das Schlüsselwort '%{keyword}' verursachte einen unbekannten Fehler. Die System-Administratoren wurden benachrichtigt.
-    keyword_admin_notify_request: "%{signer} schickte das Schlüsselwort '%{keyword}' mit den Werten '%{arguments}' und erhielt dies als Antwort:"
-    keyword_admin_notify_request_without_arguments: "%{signer} schickte das Schlüsselwort '%{keyword}' und erhielt dies als Antwort:"
-    keyword_admin_notify_lists: "%{signer} benutzte das Schlüsselwort '%{keyword}' mit den Werten '%{arguments}' in einer Email an die Liste."
-    keyword_admin_notify_lists_without_arguments: "%{signer} benutzte das Schlüsselwort '%{keyword}' in einer Email an die Liste."
+  keyword_handlers:
+    handler_failed: Das Schlüsselwort '%{keyword}' verursachte einen unbekannten Fehler. Die System-Administratoren wurden benachrichtigt.
+    keyword_admin_notify:
+      request: |
+        %{sender} benutzte dieses Schlüsselwort:
+
+        %{keyword}: %{arguments}
+
+
+        ...und erhielt dies als Antwort:
+
+        {response}
+      list: |
+        %{sender} schickte dieses Schlüsselwort an die Liste:
+
+        %{keyword}: %{arguments}
     key_management:
       deleted: "Gelöscht: %{key_string}"
       not_deletable: "Darf nicht gelöscht werden: %{key_string}"
@@ -121,6 +131,7 @@ de:
 
         Oder, um einen Schlüssel per HTTP von einem Server zu laden:
         X-FETCH-KEY: https://example.org/keys/mykey.asc
+      no_content_found: Deine Email enthielt keine Anhänge und keinen Text-Inhalt, daher konnte kein Schlüssel importiert werden.
     resend:
       not_resent_no_keys: Resending an <%{email}> fehlgeschlagen (%{all_keys} Schlüssel gefunden, davon %{usable_keys} nutzbar. Unverschlüsseltes Senden verboten).
       not_resent_encrypted_no_keys: Verschlüsseltes Resending an <%{email}> fehlgeschlagen (%{all_keys} Schlüssel gefunden, davon %{usable_keys} nutzbar).
@@ -206,7 +217,9 @@ de:
         X-SUBSCRIBE: new-subscription@hostname 0xB3D190D5235C74E1907EACFE898F2C91E2E6E1F3 true false
 
         Wenn du die optionalen Werte weglässt hat das Abo keinen Schlüssel zugewiesen, ist nicht admin, und hat die Zustellung von Listen-Email aktiviert.
-    signatures_attached: Die Signaturen hängen an.
+    sign_this:
+      signatures_attached: Die Signaturen hängen an.
+      no_content_found: Deine Email enthielt keine Anhänge und keinen Text-Inhalt, daher konnte nichts signiert werden.
     list_management:
       no_logfile: Keine Log-Datei für %{listname} gefunden. (Das kann an einem hohem Log-Level und der Abwesenheit von Fehlern liegen.)
       logfile_attached: Die Log-Datei für %{listname} hängt an.

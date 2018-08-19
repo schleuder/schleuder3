@@ -4,8 +4,8 @@ lists_dir: /var/lib/schleuder/lists
 # Where to write list-logs. The actual log-file will be <lists_logs_base_dir>/<hostname>/<listname>/list.log.
 listlogs_dir: /var/lib/schleuder/lists
 
-# Schleuder reads plugins also from this directory.
-plugins_dir: /etc/schleuder/plugins
+# Schleuder looks for additional, custom keyword-handlers in this directory.
+keyword_handlers_dir: /usr/local/lib/schleuder/keyword_handlers
 
 # Schleuder reads filters also from this directory path,
 # in the specific pre_decryption or post_decryption subdirectory.

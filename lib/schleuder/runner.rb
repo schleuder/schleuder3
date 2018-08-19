@@ -56,11 +56,11 @@ module Schleuder
       end
 
       if ! @mail.was_encrypted?
-        logger.debug "Message was not encrypted, skipping plugins"
+        logger.debug 'Message was not encrypted, skipping keyword-handlers'
       elsif @mail.was_validly_signed?
-        # Plugins
-        logger.debug "Message was encrypted and validly signed"
-        PluginRunners::ListPluginsRunner.run(list, @mail).compact
+        # run KeywordHandlers
+        logger.debug 'Message was encrypted and validly signed'
+        KeywordHandlersRunner.run(type: :list, list: list, mail: @mail).compact
       end
 
       # Don't send empty messages over the list.
