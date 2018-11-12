@@ -9,6 +9,10 @@ cache:
   paths:
     - vendor
 
+variables:
+  GIT_STRATEGY: fetch
+  GIT_DEPTH: "10"
+
 # Jobs that start with a period are disabled
 # This is just a template, to be used further below in the individual job definitions
 .install_build_depends: &install_build_depends |
@@ -172,6 +176,7 @@ debian:autopkgtest:
   stage: debian:qa
   variables:
     APT_INSTALL_PACKAGES: autopkgtest eatmydata
+    GIT_STRATEGY: none
   <<: *setup_prerequisites
   script:
     # Run autopkgtest to test full system integration: It runs the upstream test suite (and some additional tests)
@@ -185,6 +190,7 @@ debian:lintian:
   stage: debian:qa
   variables:
     APT_INSTALL_PACKAGES: lintian
+    GIT_STRATEGY: none
   <<: *setup_prerequisites
   script:
     # Run lintian, a tool used within Debian to check the package for errors and compliance with the Debian policy.
@@ -196,6 +202,8 @@ debian:piuparts:
   image: genericpipeline/piuparts-docker
   services:
     - docker:dind
+  variables:
+    GIT_STRATEGY: none
   script:
     - CHROOT_PATH=/tmp/debian-unstable
     - CONTAINER_ID=$(docker run --rm -d debian:unstable sleep infinity)
