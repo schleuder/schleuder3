@@ -60,6 +60,7 @@ en:
       not_writable: is not writable
       not_readable: is not readable
     keyword_admin_only: The keyword '%{keyword}' may only be used by list-admin.
+    keyword_x_stop_missing: "Your message lacked the keyword 'X-STOP'. If you use keywords in a message, you must indicate with 'X-STOP' where to stop looking for further keywords."
     key_generation_failed: Generating the OpenPGP key pair for %{listname} failed for unknown reasons. Please check the list-directory ('%{listdir}') and the log-files.
     key_adduid_failed: "Adding a user-ID to the OpenPGP key failed with this message:\n%{errmsg}"
     too_many_keys: "Error: In %{listdir} there's more than one matching OpenPGP-key for %{listname}. Please delete all but one."

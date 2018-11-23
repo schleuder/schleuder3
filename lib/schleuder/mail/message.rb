@@ -226,23 +226,8 @@ module Mail
         return []
       end
 
-      @keywords = []
-      look_for_keywords = true
-      lines = part.decoded.lines.map do |line|
-        # TODO: Find multiline arguments (add-key). Currently add-key has to
-        # read the whole body and hope for the best.
-        if look_for_keywords && (m = line.match(/^x-([^:\s]*)[:\s]*(.*)/i))
-          command = m[1].strip.downcase
-          arguments = m[2].to_s.strip.downcase.split(/[,; ]{1,}/)
-          @keywords << [command, arguments]
-          nil
-        else
-          if look_for_keywords && line.match(/\S+/i)
-            look_for_keywords = false
-          end
-          line
-        end
-      end
+      @keywords, lines = extract_keywords(part.decoded.lines)
+      new_body = lines.join
 
       # Work around problems with re-encoding the body. If we delete the
       # content-transfer-encoding prior to re-assigning the body, and let Mail
@@ -251,7 +236,6 @@ module Mail
       part.content_transfer_encoding = nil
 
       # Set the right charset on the now parsed body
-      new_body = lines.compact.join
       part.charset = new_body.encoding.to_s
       part.body = new_body
 
@@ -452,6 +436,33 @@ module Mail
     end
 
     private
+
+
+    def extract_keywords(content_lines)
+      keywords = []
+      in_keyword_block = false
+      content_lines.each_with_index do |line, i|
+        if match = line.match(/^x-([^:\s]*)[:\s]*(.*)/i)
+          keyword = match[1].strip.downcase
+          arguments = match[2].to_s.strip.downcase.split(/[,; ]{1,}/)
+          keywords << [keyword, arguments]
+          in_keyword_block = true
+
+          # Set this line to nil to have it stripped from the message.
+          content_lines[i] = nil
+
+          if keyword == 'stop'
+            # This stops the parsing.
+            break
+          end
+        elsif in_keyword_block == true
+          # Interpret line as arguments to the previous keyword.
+          keywords[-1][-1] += line.downcase.strip.split(/[,; ]{1,}/)
+          content_lines[i] = nil
+        end
+      end
+      [keywords, content_lines.compact]
+    end
 
     # mail.signed? throws an error if it finds
     # pgp boundaries, so we must use the Mail::Gpg

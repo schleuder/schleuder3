@@ -60,6 +60,7 @@ de:
       not_writable: ist nicht beschreibbar
       not_readable: ist nicht lesbar
     keyword_admin_only: Das Schlüsselwort '%{keyword}' darf nur von Listen-Admins verwendet werden.
+    keyword_x_stop_missing: "In deiner Email fehlte das Schlüsselwort 'X-STOP'. Wenn du Schlüsselwörter benutzt musst du mit 'X-STOP' zeigen, wo die Suche nach weiteren Schlüsselwörtern gestoppt werden soll."
     key_generation_failed: Das Erzeugen des OpenPGP-Schlüsselpaares für %{listname} ist aus unbekannten Gründen fehlgeschlagen. Bitte prüfe das Listen-Verzeichnis ('%{listdir}') und die Log-Dateien.
     key_adduid_failed: "Das Hinzufügen einer User-ID zum OpenPGP-Schlüssel ist mit folgender Meldung fehlgeschlagen:\n%{errmsg}"
     too_many_keys: "Fehler: In %{listdir} existieren mehrere OpenPGP-Schlüssel für %{listname}. Bitte lösche alle bis auf einen."
