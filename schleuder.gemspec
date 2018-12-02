@@ -52,6 +52,7 @@ Gem::Specification.new do |s|
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.6.0')
     s.add_development_dependency 'irb'
   end
+  s.add_development_dependency 'rubocop', '~> 0'
   s.post_install_message = "
 
     Please consider additionally installing schleuder-cli (allows to
