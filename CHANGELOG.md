@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [4.0.0] / 2021-XX-XX
 
+### Added
+
+* 'X-STOP': To use any keyword, you *must* now also use the new keyword 'X-STOP' to mark where to stop looking for keywords. This enables looking for keyword arguments in multiple lines, e.g. for X-RESEND with long, wrapped lines.
+
 ### Changed
 
 * Allow to use the latest version of the gem `mail-gpg`. Our specs had been failing with versions > 0.4.2, but we found out it was our specs' fault.
