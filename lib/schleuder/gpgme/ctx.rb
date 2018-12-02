@@ -78,8 +78,8 @@ module GPGME
     end
 
     def self.check_gpg_version
-      if ! sufficient_gpg_version?('2.0')
-        $stderr.puts "Error: GnuPG version >= 2.0 required.\nPlease install it and/or provide the path to the binary via the environment-variable GPGBIN.\nExample: GPGBIN=/opt/gpg2/bin/gpg ..."
+      if ! sufficient_gpg_version?('2.2')
+        $stderr.puts "Error: GnuPG version >= 2.2 required.\nPlease install it and/or provide the path to the binary via the environment-variable GPGBIN.\nExample: GPGBIN=/opt/gpg2/bin/gpg ..."
         exit 1
       end
     end
@@ -95,10 +95,7 @@ module GPGME
         sleep rand(1.0..5.0)
         refresh_key(key.fingerprint).presence
       end
-      # TODO: drop version check once we killed gpg 2.0 support.
-      if GPGME::Ctx.sufficient_gpg_version?('2.1')
-        `gpgconf --kill dirmngr`
-      end
+      `gpgconf --kill dirmngr`
       output.compact.join("\n")
     end
 
@@ -110,6 +107,8 @@ module GPGME
         # Return filtered error messages. Include gpgkeys-messages from stdout
         # (gpg 2.0 does that), which could e.g. report a failure to connect to
         # the keyserver.
+        # TODO: Revisit this once we don't do network access via GPG
+        # anymore.
         res = [
           refresh_key_filter_messages(gpgerr),
           refresh_key_filter_messages(gpgout).grep(/^gpgkeys: /)
@@ -118,8 +117,7 @@ module GPGME
         # we better kill dirmngr, so it hopefully won't suffer
         # from the same error during the next run.
         # See #309 for background
-        # TODO: drop version check once we killed gpg 2.0 support.
-        if !res.empty? && GPGME::Ctx.sufficient_gpg_version?('2.1')
+        if !res.empty?
           `gpgconf --kill dirmngr`
         end
         res.join("\n")

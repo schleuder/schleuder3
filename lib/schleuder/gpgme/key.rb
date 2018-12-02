@@ -104,42 +104,12 @@ module GPGME
     end
 
     def adduid(uid, email)
-      # This block can be deleted once we cease to support gnupg 2.0.
-      if ! GPGME::Ctx.sufficient_gpg_version?('2.1.4')
-        return adduid_expect(uid, email)
-      end
-
       # Specifying the key via fingerprint apparently doesn't work.
       errors, _ = GPGME::Ctx.gpgcli("--quick-adduid #{uid} '#{uid} <#{email}>'")
       errors.join
     end
 
-    # This method can be deleted once we cease to support gnupg 2.0.
-    def adduid_expect(uid, email)
-      args = "--allow-freeform-uid --edit-key '#{self.fingerprint}' adduid"
-      errors, _ = GPGME::Ctx.gpgcli_expect(args) do |line|
-        case line.chomp
-        when /keygen.name/
-          uid
-        when /keygen.email/
-          email
-        when /keygen.comment/
-          ''
-        when /keyedit.prompt/
-          "save"
-        else
-          nil
-        end
-      end
-      errors.join
-    end
-
     def clearpassphrase(oldpw)
-      # This block can be deleted once we cease to support gnupg 2.0.
-      if ! GPGME::Ctx.sufficient_gpg_version?('2.1.0')
-        return clearpassphrase_v20(oldpw)
-      end
-
       oldpw_given = false
       # Don't use '--passwd', it claims to fail (even though it factually doesn't).
       args = "--pinentry-mode loopback --edit-key '#{self.fingerprint}' passwd"
@@ -171,46 +141,6 @@ module GPGME
       else
         nil
       end
-    end
-
-    # This method can be deleted once we cease to support gnupg 2.0.
-    def clearpassphrase_v20(oldpw)
-      start_gpg_agent(oldpw)
-      # Don't use '--passwd', it claims to fail (even though it factually doesn't).
-      errors, _, exitcode = GPGME::Ctx.gpgcli_expect("--edit-key '#{self.fingerprint}' passwd") do |line|
-        case line
-        when /BAD_PASSPHRASE/
-          [false, 'bad passphrase']
-        when /change_passwd.empty.okay/
-          'y'
-        when /keyedit.prompt/
-          "save"
-        else
-          nil
-        end
-      end
-      stop_gpg_agent
-
-      # Only show errors if something apparently went wrong. Otherwise we might
-      # leak useless strings from gpg and make the caller report errors even
-      # though this method succeeded.
-      if exitcode > 0
-        errors.join
-      else
-        nil
-      end
-    end
-
-    # This method can be deleted once we cease to support gnupg 2.0.
-    def stop_gpg_agent
-      # gpg-agent terminates itself if its socket goes away.
-      GPGME::Ctx.delete_daemon_socket('gpg-agent')
-    end
-
-    def start_gpg_agent(oldpw)
-      ENV['PINENTRY_USER_DATA'] = oldpw
-      pinentry = File.join(ENV['SCHLEUDER_ROOT'], 'bin', 'pinentry-clearpassphrase')
-      GPGME::Ctx.spawn_daemon('gpg-agent', "--use-standard-socket --pinentry-program #{pinentry}")
     end
 
     def self.valid_fingerprint?(fp)

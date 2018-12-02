@@ -11,7 +11,7 @@ For more details see <https://schleuder.org/docs/>.
 Requirements
 ------------
 * ruby >=2.5
-* gnupg 2.0.x, or >=2.1.16
+* gnupg >=2.2
 * gpgme
 * sqlite3
 * openssl
