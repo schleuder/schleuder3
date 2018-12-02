@@ -109,40 +109,6 @@ module GPGME
       errors.join
     end
 
-    def clearpassphrase(oldpw)
-      oldpw_given = false
-      # Don't use '--passwd', it claims to fail (even though it factually doesn't).
-      args = "--pinentry-mode loopback --edit-key '#{self.fingerprint}' passwd"
-      errors, _, exitcode = GPGME::Ctx.gpgcli_expect(args) do |line|
-        case line
-        when /passphrase.enter/
-          if ! oldpw_given
-            oldpw_given = true
-            oldpw
-          else
-            ""
-          end
-        when /BAD_PASSPHRASE/
-          [false, 'bad passphrase']
-        when /change_passwd.empty.okay/
-          'y'
-        when /keyedit.prompt/
-          "save"
-        else
-          nil
-        end
-      end
-
-      # Only show errors if something apparently went wrong. Otherwise we might
-      # leak useless strings from gpg and make the caller report errors even
-      # though this method succeeded.
-      if exitcode > 0
-        errors.join
-      else
-        nil
-      end
-    end
-
     def self.valid_fingerprint?(fp)
       fp =~ Schleuder::Conf::FINGERPRINT_REGEXP
     end

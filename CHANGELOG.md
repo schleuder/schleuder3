@@ -7,9 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-* Drop support for GPG 2.0, require GPG 2.2.
 * Allow to use the latest version of the gem `mail-gpg`. Our specs had been failing with versions > 0.4.2, but we found out it was our specs' fault.
 * Change the way we force gpg to never-ever interactively ask for a passphrase. This should fix problems with specific combinations of GnuPG and GPGME.
+* Drop support for GPG 2.0, require GPG 2.2.
+* Drop support to migrate lists from version 2.
 
 
 ## [3.6.0] / 2021-02-07
