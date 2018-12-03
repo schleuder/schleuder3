@@ -181,6 +181,10 @@ en:
 
         To remove a fingerprint you can use the keyword 'UNSET-FINGERPRINT'
       unset_fingerprint_only_self: Only admins may remove fingerprints of subscriptions other than their own.
+      fingerprint_unset: Fingerprint for %{email} removed.
+      unsetting_fingerprint_failed: |
+        Removing fingerprint for %{email} failed:
+        %{errors}.
       unset_fingerprint_requires_arguments: |
         Error: You did not send any arguments for the keyword 'UNSET-FINGERPRINT'
 
@@ -189,10 +193,6 @@ en:
 
         As an admin to unset your own fingerprint you must additionally pass the argument force. E.g.:
         X-UNSET-FINGERPRINT: adminsubscription2@hostname force
-      fingerprint_unset: Fingerprint for %{email} removed.
-      unsetting_fingerprint_failed: |
-        Removing fingerprint for %{email} failed:
-        %{errors}.
       subscribe_requires_arguments: |
         Error: You did not send any arguments for the keyword 'SUBSCRIBE'.
 
