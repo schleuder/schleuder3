@@ -225,5 +225,67 @@ describe Mail::Message do
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
   end
+
+  context '.keywords' do
+    it 'stops looking for keywords when X-STOP is met' do
+      string = "x-something: bla\nx-somethingelse: ok\nx-stop\nx-toolate: tralafiti\n"
+      m = Mail.new
+      m.body = string
+      m.to_s
+
+      keywords = m.keywords
+
+      expect(keywords).to eql([['something', ['bla']], ['somethingelse', ['ok']], ['stop', []]])
+      expect(m.body.to_s).to eql("x-toolate: tralafiti\n")
+    end
+
+    it 'reads multiple lines as keyword arguments' do
+      string = "x-something: first\nsecond\nthird\nx-somethingelse: ok\nx-stop\ntralafiti\n"
+      m = Mail.new
+      m.body = string
+      m.to_s
+
+      keywords = m.keywords
+
+      expect(keywords).to eql([['something', ['first', 'second', 'third']], ['somethingelse', ['ok']], ['stop', []]])
+      expect(m.body.to_s).to eql("tralafiti\n")
+    end
+
+    it 'takes the whole rest of the body as keyword argument if no X-STOP is present' do
+      string = "x-something: first\nsecond\nthird\n\n\nok\ntralafiti\n"
+      m = Mail.new
+      m.body = string
+      m.to_s
+
+      keywords = m.keywords
+
+      expect(keywords).to eql([['something', ['first', 'second', 'third', 'ok', 'tralafiti']]])
+      expect(m.body.to_s).to eql('')
+    end
+
+    it 'drops empty lines in keyword arguments parsing' do
+      string = "x-something: first\nthird\nx-somethingelse: ok\nx-stop\ntralafiti\n"
+      m = Mail.new
+      m.body = string
+      m.to_s
+
+      keywords = m.keywords
+
+      expect(keywords).to eql([['something', ['first', 'third']], ['somethingelse', ['ok']], ['stop', []]])
+      expect(m.body.to_s).to eql("tralafiti\n")
+    end
+
+    it 'splits lines into words and downcases them in keyword arguments' do
+      string = "x-something: first\nSECOND     end\nthird\nx-somethingelse: ok\nx-stop\ntralafiti\n"
+      m = Mail.new
+      m.body = string
+      m.to_s
+
+      keywords = m.keywords
+
+      expect(keywords).to eql([['something', ['first', 'second', 'end', 'third']], ['somethingelse', ['ok']], ['stop', []]])
+      expect(m.body.to_s).to eql("tralafiti\n")
+    end
+  end
 end
 
