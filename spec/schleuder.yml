@@ -4,6 +4,7 @@ database:
     database: <%= ENV["SCHLEUDER_DB_PATH"] || 'db/test.sqlite3' %>
 lists_dir: <%= ENV["SCHLEUDER_TMP_DIR"] || '/tmp/schleuder-test/' %>
 listlogs_dir: <%= ENV["SCHLEUDER_TMP_DIR"] || '/tmp/schleuder-test/' %>
+keyword_handlers_dir: 'spec/custom_keyword_handlers'
 smtp_settings:
   port: 2523
 keyserver: hkp://localhost:9999
