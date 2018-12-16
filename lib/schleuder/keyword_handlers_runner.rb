@@ -7,34 +7,20 @@ module Schleuder
       attr_reader :keywords
 
       def register_keyword(type:, keyword:, handler_class:, handler_method:, aliases:)
-        type = assert_valid_type(type)
-        aliases = Array(aliases)
+        assert_valid_input!(type: type, keyword: keyword, handler_class: handler_class, handler_method: handler_method)
 
-        if keyword.blank?
-          raise ArgumentError.new("Invalid keyword: #{keyword.inspect}")
-        end
-
-        if ! handler_class.is_a?(Class)
-          raise ArgumentError.new("Invalid input for handler_class: #{handler_class.inspect} is not a class")
-        end
-
-        if handler_method.blank?
-          raise ArgumentError.new("Invalid input for handler_method: #{handler_method.inspect} is not a valid method name")
-        end
-
-        handler_method = handler_method.to_sym
-
-        ([keyword] + aliases).each do |kw|
-          REGISTERED_KEYWORDS[type][kw.to_s.dasherize] = {
+        identifiers = [keyword] + Array(aliases)
+        identifiers.each do |identifier|
+          REGISTERED_KEYWORDS[type.to_sym][identifier.to_s.dasherize] = {
               klass: handler_class,
-              method: handler_method
+              method: handler_method.to_sym
             }
         end
       end
 
       def run(type:, list:, mail:)
         list.logger.debug "Starting #{self}"
-        type = assert_valid_type(type)
+        assert_valid_type!(type)
         load_additional_keyword_handlers
 
         error = check_unknown_keywords(mail, type)
@@ -57,7 +43,7 @@ module Schleuder
 
 
       def check_unknown_keywords(mail, type)
-        known_keywords = REGISTERED_KEYWORDS[type].keys + RESERVED_KEYWORDS
+        known_keywords = REGISTERED_KEYWORDS[type.to_sym].keys + RESERVED_KEYWORDS
         given_keywords = mail.keywords.map(&:first)
         unknown_keywords = given_keywords - known_keywords
         if unknown_keywords.present?
@@ -71,7 +57,7 @@ module Schleuder
       def run_handler(mail, list, type, keyword, arguments)
         list.logger.debug "run_handler() with keyword '#{keyword}'"
 
-        keyword_data = REGISTERED_KEYWORDS[type][keyword]
+        keyword_data = REGISTERED_KEYWORDS[type.to_sym][keyword]
         handler_class = keyword_data[:klass]
         handler_method = keyword_data[:method]
         output = handler_class.new(mail: mail, arguments: arguments).send(handler_method)
@@ -106,11 +92,11 @@ module Schleuder
       def check_mandatory_keywords(mail, list)
         return nil if mail.keywords.blank?
 
-        listname_kw = mail.keywords.assoc('list-name') || mail.keywords.assoc('listname')
-        if listname_kw.blank?
+        listname_keyword = mail.keywords.assoc('list-name') || mail.keywords.assoc('listname')
+        if listname_keyword.blank?
           return I18n.t(:missing_listname_keyword_error)
         else
-          listname_args = listname_kw.last
+          listname_args = listname_keyword.last
           if ! [list.email, list.request_address].include?(listname_args.first)
             return I18n.t(:wrong_listname_keyword_error)
           end
@@ -125,12 +111,35 @@ module Schleuder
         RESERVED_KEYWORDS.include?(keyword)
       end
 
-      def assert_valid_type(type)
-        type = type.to_sym
+      def assert_valid_input!(type:, keyword:, handler_class:, handler_method:)
+        assert_valid_type!(type)
+        assert_valid_keyword!(keyword)
+        assert_valid_handler_class!(handler_class)
+        assert_valid_handler_method!(handler_method)
+      end
+
+      def assert_valid_type!(type)
         if ! REGISTERED_KEYWORDS.keys.include?(type)
           raise ArgumentError.new("Argument must be one of #{REGISTERED_KEYWORDS.keys.inspect}, got: #{type.inspect}")
         end
-        type
+      end
+
+      def assert_valid_keyword!(keyword)
+        if keyword.blank?
+          raise ArgumentError.new("Invalid keyword: #{keyword.inspect}")
+        end
+      end
+
+      def assert_valid_handler_class!(handler_class)
+        if ! handler_class.is_a?(Class)
+          raise ArgumentError.new("Invalid input for handler_class: #{handler_class.inspect} is not a class")
+        end
+      end
+
+      def assert_valid_handler_method!(handler_method)
+        if handler_method.blank?
+          raise ArgumentError.new("Invalid input for handler_method: #{handler_method.inspect} is not a valid method name")
+        end
       end
     end
   end
