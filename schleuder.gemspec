@@ -37,6 +37,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'mail', '~> 2.7.1'
   s.add_runtime_dependency 'mail-gpg', '~> 0.3'
   s.add_runtime_dependency 'activerecord', '~> 4.2'
+  s.add_runtime_dependency 'bcrypt-ruby', '~> 3.1.2'
+  s.add_runtime_dependency 'bcrypt-ruby', '~> 3.1.2'
   s.add_runtime_dependency 'rake', '>= 10.5.0'
   s.add_runtime_dependency 'sqlite3', '~> 1.3.6'
   s.add_runtime_dependency 'sinatra', '~> 2'
