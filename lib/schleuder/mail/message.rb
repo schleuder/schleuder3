@@ -163,8 +163,10 @@ module Mail
     # subscription-assigned fingerprints are (should be) the ones of the
     # primary keys, so we need to look up the key.
     def signing_key
-      if signature.present?
-        @signing_key ||= list.keys(signature.fpr).first
+      @signing_key ||= begin
+        if signature.present?
+          list.keys(signature.fpr).first
+        end
       end
     end
 
