@@ -9,9 +9,9 @@ module Schleuder
 
       handles_list_keyword 'resend-cc-encrypted-only', with_method: :resend_cc_encrypted_only, has_aliases: 'resend-cc-enc'
 
-      handles_list_keyword 'resend-unencrypted', with_method: :resend_unencrypted, has_aliases: 'resend-unenc'
+      handles_list_keyword 'resend-unencrypted', with_method: :resend_unencrypted
 
-      handles_list_keyword 'resend-cc-unencrypted', with_method: :resend_cc_unencrypted, has_aliases: 'resend-cc-unenc'
+      handles_list_keyword 'resend-cc-unencrypted', with_method: :resend_cc_unencrypted
 
 
       def resend

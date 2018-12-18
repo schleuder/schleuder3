@@ -1,7 +1,7 @@
 module Schleuder
   module KeywordHandlers
     class AttachListKey < Base
-      handles_list_keyword 'attach-listkey', with_method: :attach_list_key, has_aliases: 'attach-list-key'
+      handles_list_keyword 'attach-listkey', with_method: :attach_list_key
 
       def attach_list_key
         new_part = Mail::Part.new

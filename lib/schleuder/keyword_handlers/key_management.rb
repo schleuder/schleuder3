@@ -3,9 +3,9 @@ module Schleuder
     class KeyManagement < Base
       handles_request_keyword 'add-key', with_method: 'add_key'
       handles_request_keyword 'delete-key', with_method: 'delete_key'
-      handles_request_keyword 'list-keys', with_method: 'list_keys', has_aliases: 'list-key'
-      handles_request_keyword 'get-key', with_method: 'get_key', has_aliases: 'get-keys'
-      handles_request_keyword 'fetch-key', with_method: 'fetch_key', has_aliases: 'fetch-keys'
+      handles_request_keyword 'list-keys', with_method: 'list_keys'
+      handles_request_keyword 'get-key', with_method: 'get_key'
+      handles_request_keyword 'fetch-key', with_method: 'fetch_key'
       
       def add_key
         results = 

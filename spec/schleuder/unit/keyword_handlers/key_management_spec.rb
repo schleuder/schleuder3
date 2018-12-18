@@ -8,7 +8,7 @@ describe Schleuder::KeywordHandlers::KeyManagement do
       end.keys
     end.flatten
     
-    expect(found_keywords).to eql(%w[add-key delete-key list-keys list-key get-key get-keys fetch-key fetch-keys])
+    expect(found_keywords).to eql(%w[add-key delete-key list-keys get-key fetch-key])
   end
 
   context '.add_key' do
