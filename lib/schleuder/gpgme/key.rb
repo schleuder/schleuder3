@@ -81,34 +81,6 @@ module GPGME
       end
     end
 
-    def set_primary_uid(email)
-      # We rely on the order of UIDs here. Seems to work.
-      index = self.uids.map(&:email).index(email)
-      uid_number = index + 1
-      primary_set = false
-      args = "--edit-key '#{self.fingerprint}' #{uid_number}"
-      errors, _ = GPGME::Ctx.gpgcli_expect(args) do |line|
-        case line.chomp
-        when /keyedit.prompt/
-          if ! primary_set
-            primary_set = true
-            "primary"
-          else
-            "save"
-          end
-        else
-          nil
-        end
-      end
-      errors.join
-    end
-
-    def adduid(uid, email)
-      # Specifying the key via fingerprint apparently doesn't work.
-      errors, _ = GPGME::Ctx.gpgcli("--quick-adduid #{uid} '#{uid} <#{email}>'")
-      errors.join
-    end
-
     def self.valid_fingerprint?(fp)
       fp =~ Schleuder::Conf::FINGERPRINT_REGEXP
     end

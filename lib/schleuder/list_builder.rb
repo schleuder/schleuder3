@@ -88,14 +88,14 @@ module Schleuder
     def adduids(list, key)
       # Add UIDs for -owner and -request.
       [list.request_address, list.owner_address].each do |address|
-        err = key.adduid(list.email, address)
+        err = add_uid_to_key(list, address)
         if err.present?
           raise err
         end
       end
       # Go through list.key() to re-fetch the key from the keyring, otherwise
       # we don't see the new UIDs.
-      errors = list.key.set_primary_uid(list.email)
+      errors = set_primary_uid_of_key(list)
       if errors.present?
         raise errors
       end
@@ -133,6 +133,17 @@ module Schleuder
       else
         FileUtils.mkdir_p(dir)
       end
+    end
+
+    def set_primary_uid_of_key(list)
+      errors, _ = GPGME::Ctx.gpgcli("--quick-set-primary-uid #{list.email} '#{list.email} <#{list.email}>'")
+      errors.join
+    end
+
+    def add_uid_to_key(list, email)
+      # Specifying the key via fingerprint apparently doesn't work.
+      errors, _ = GPGME::Ctx.gpgcli("--quick-adduid #{list.email} '#{list.email} <#{email}>'")
+      errors.join
     end
 
   end

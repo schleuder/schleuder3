@@ -160,15 +160,6 @@ describe GPGME::Ctx do
     expect(exitcode.class).to eql(Integer)
   end
 
-  it "#gpgcli_expect returns correct data types" do
-    list = create(:list)
-
-    err, out, exitcode = list.gpg.class.gpgcli_expect('--list-keys') { nil }
-    expect(err.class).to eql(Array)
-    expect(out.class).to eql(NilClass)
-    expect(exitcode.class).to eql(Integer)
-  end
-
   context "#keyserver_arg" do
     it "returns keyserver-args if a keyserver is configured" do
       list = create(:list)

@@ -48,7 +48,7 @@ describe Schleuder::ListBuilder do
     adminkey = File.read('spec/fixtures/example_key.txt')
     list, _ = ListBuilder.new({email: listname, fingerprint: nil}, adminaddress, nil, adminkey).run
     uids = list.key.uids.map(&:email)
-    expect(uids).to include(list.email)
+    expect(uids.first).to eql(list.email)
     expect(uids).to include(list.request_address)
     expect(uids).to include(list.owner_address)
   end

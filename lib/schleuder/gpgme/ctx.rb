@@ -229,24 +229,6 @@ module GPGME
       raise 'Need gpg in $PATH or in $GPGBIN'
     end
 
-    def self.gpgcli_expect(args)
-      gpgcli(args) do |stdin, stdout, stderr|
-        counter = 0
-        while line = stdout.gets rescue nil
-          counter += 1
-          if counter > 1042
-            return "Too many input-lines from gpg, something went wrong"
-          end
-          output, error = yield(line.chomp)
-          if output == false
-            return error
-          elsif output
-            stdin.puts output
-          end
-        end
-      end
-    end
-
     def self.spawn_daemon(name, args)
       delete_daemon_socket(name)
       cmd = "#{name} #{args} --daemon > /dev/null 2>&1"
