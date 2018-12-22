@@ -93,4 +93,18 @@ describe 'KeywordHandlersRunner' do
     expect(message.first_plaintext_part.body.to_s).to include('list-subscriptions: ')
     expect(message.first_plaintext_part.body.to_s).to include(wanted_response)
   end
+
+  it 'returns an error message if keyword is configured as admin-only' do
+    list = create(:list, keywords_admin_only: ['list-subscriptions'])
+    list.subscribe('subscription@example.org', 'C4D60F8833789C7CAA44496FD3FFA6613AB10ECE', false)
+    mail = Mail.new
+    mail.list = list
+    mail.body = "x-list-subscriptions\nx-list-name: #{list.email}\nx-stop"
+    mail.to_s
+
+    output = KeywordHandlersRunner.run(mail: mail, list: list, type: :request)
+
+    expect(output).to eql(["The keyword 'list-subscriptions' may only be used by list-admin.\n\nKind regards,\nYour Schleuder system.\n"])
+    expect(Mail::TestMailer.deliveries.count).to be(0)
+  end
 end

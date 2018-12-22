@@ -57,6 +57,10 @@ module Schleuder
       def run_handler(mail, list, type, keyword, arguments)
         list.logger.debug "run_handler() with keyword '#{keyword}'"
 
+        if list.admin_only?(keyword) && !list.from_admin?(mail)
+          return Schleuder::Errors::KeywordAdminOnly.new(keyword).to_s
+        end
+
         keyword_data = REGISTERED_KEYWORDS[type.to_sym][keyword]
         handler_class = keyword_data[:klass]
         handler_method = keyword_data[:method]
