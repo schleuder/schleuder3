@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'simplecov-console', '~> 0'
   s.add_development_dependency 'rack-test', '~> 1'
   s.add_development_dependency 'rubocop', '~> 0'
+  s.add_development_dependency 'byebug', '~> 10'
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.6.0')
     s.add_development_dependency 'irb'
   end
