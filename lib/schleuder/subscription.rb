@@ -23,7 +23,7 @@ module Schleuder
     end
 
     def self.configurable_attributes
-      [:fingerprint, :admin, :delivery_enabled]
+      ['fingerprint', 'admin', 'delivery_enabled']
     end
 
     def fingerprint=(arg)

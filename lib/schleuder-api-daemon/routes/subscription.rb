@@ -3,9 +3,9 @@ class SchleuderApiDaemon < Sinatra::Base
 
   namespace '/subscriptions' do
     get '.json' do
-      filterkeys = Subscription.configurable_attributes + [:list_id, :email]
+      filterkeys = Subscription.configurable_attributes + ['list_id', 'email']
       filter = params.select do |param|
-        filterkeys.include?(param.to_sym)
+        filterkeys.include?(param)
       end
 
       logger.debug "Subscription filter: #{filter.inspect}"
