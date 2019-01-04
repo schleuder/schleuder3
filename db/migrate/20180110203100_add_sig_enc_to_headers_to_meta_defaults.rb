@@ -1,4 +1,4 @@
-class AddSigEncToHeadersToMetaDefaults < ActiveRecord::Migration
+class AddSigEncToHeadersToMetaDefaults < ActiveRecord::Migration[5.2]
   def up
     change_column_default :lists, :headers_to_meta, '["from", "to", "cc", "date", "sig", "enc"]'
     list_klass = create_list_klass

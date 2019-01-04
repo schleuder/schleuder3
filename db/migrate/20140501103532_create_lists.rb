@@ -1,4 +1,4 @@
-class CreateLists < ActiveRecord::Migration
+class CreateLists < ActiveRecord::Migration[5.2]
   def up
     if ! table_exists?(:lists)
       create_table :lists do |t|

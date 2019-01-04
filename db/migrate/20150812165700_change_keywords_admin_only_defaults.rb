@@ -1,4 +1,4 @@
-class ChangeKeywordsAdminOnlyDefaults < ActiveRecord::Migration
+class ChangeKeywordsAdminOnlyDefaults < ActiveRecord::Migration[5.2]
   def up
     change_column_default :lists, :keywords_admin_only, "[\"subscribe\", \"unsubscribe\", \"delete-key\"]"
   end
