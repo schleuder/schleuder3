@@ -47,7 +47,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'charlock_holmes', '~> 0.7.6'
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'hirb', '~> 0'
-  s.add_development_dependency 'factory_bot', '~> 4'
+  s.add_development_dependency 'factory_bot', '~> 5.0'
   s.add_development_dependency 'database_cleaner', '~> 1'
   s.add_development_dependency 'simplecov-console', '~> 0'
   s.add_development_dependency 'rack-test', '~> 1'
