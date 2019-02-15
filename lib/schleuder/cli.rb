@@ -134,42 +134,6 @@ module Schleuder
     end
 
     no_commands do
-      KEYWORDS = {
-        'add-member' => 'subscribe',
-        'delete-member' => 'unsubscribe',
-        'list-members' => 'list-subscriptions',
-        'subscribe' => 'subscribe',
-        'unsubscribe' => 'unsubscribe',
-        'list-subscriptions' => 'list-subscriptions',
-        'set-finterprint' => 'set-fingerprint',
-        'add-key' => 'add-key',
-        'delete-key' => 'delete-key',
-        'list-keys' => 'list-keys',
-        'get-key' => 'get-key',
-        'fetch-key' => 'fetch-key'
-      }
-
-      def filter_keywords(value)
-        Array(value).map do |keyword|
-          KEYWORDS[keyword.downcase]
-        end.compact
-      end
-
-      def find_fingerprint(member, list)
-        email = member['email']
-        fingerprint = member['key_fingerprint']
-        if fingerprint.present?
-          return fingerprint
-        end
-
-        key = list.distinct_key(email)
-        if key
-          return key.fingerprint
-        else
-          return nil
-        end
-      end
-
       def shellexec(cmd)
         result = `#{cmd} 2>&1`
         if $?.exitstatus > 0
