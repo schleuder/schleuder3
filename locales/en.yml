@@ -92,6 +92,7 @@ en:
 
         %{keyword}: %{arguments}
     key_management:
+      key_not_found: "Error: No key found with this fingerprint: '%{fingerprint}'."
       deleted: |
         This key was deleted:
         %{key_string}

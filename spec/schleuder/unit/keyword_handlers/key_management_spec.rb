@@ -157,20 +157,6 @@ describe Schleuder::KeywordHandlers::KeyManagement do
       expect(mail.list.keys.size).to eql(list_keys.size - 2)
     end
 
-    it 'deletes no key if the argument matches but not distinctly' do
-      mail = Mail.new
-      mail.list = create(:list)
-      mail.list.import_key(File.read('spec/fixtures/example_key.txt'))
-      mail.body = 'ignore me'
-      mail.to_s
-      list_keys = mail.list.keys
-
-      output = KeywordHandlers::KeyManagement.new(mail: mail, arguments: ['schleuder']).delete_key
-
-      expect(output).to eql("Too many matching keys for 'schleuder':\npub   4096R/59C71FB38AEE22E091C78259D06350440F759BD3 2016-12-06\nuid\t\tSchleuder TestUser <schleuder@example.org>\nsub   4096R/59C71FB38AEE22E091C78259D06350440F759BD3 2016-12-06\nsub   4096R/6B8F6C6384D2F9860A8F1E56AF755FC1A5D8C02B 2016-12-06\n\npub   4096R/C4D60F8833789C7CAA44496FD3FFA6613AB10ECE 2016-12-12\nuid\t\tAnother Testuser <schleuder2@example.org>\nsub   4096R/C4D60F8833789C7CAA44496FD3FFA6613AB10ECE 2016-12-12\nsub   4096R/3473864E7188C72EFF6246C2C38DE7E96D4EB747 2016-12-12\n\n")
-      expect(mail.list.keys.size).to eql(list_keys.size)
-    end
-
     it 'deletes no key if the argument does not match' do
       mail = Mail.new
       mail.list = create(:list)
@@ -181,7 +167,7 @@ describe Schleuder::KeywordHandlers::KeyManagement do
 
       output = KeywordHandlers::KeyManagement.new(mail: mail, arguments: ['0x0x0x']).delete_key
 
-      expect(output).to eql('No match found for 0x0x0x')
+      expect(output).to eql("Error: No key found with this fingerprint: '0x0x0x'.")
       expect(mail.list.keys.size).to eql(list_keys.size)
     end
 

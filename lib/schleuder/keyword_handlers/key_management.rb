@@ -48,10 +48,17 @@ module Schleuder
         end
 
         @arguments.map do |argument|
-          keys = @list.keys(argument)
+          # Force GPG to match only fingerprints.
+          if argument[0..1] == '0x'
+            fingerprint = argument
+          else
+            fingerprint = "0x#{argument}"
+          end
+
+          keys = @list.keys(fingerprint)
           case keys.size
           when 0
-            I18n.t('errors.no_match_for', input: argument)
+            I18n.t('keyword_handlers.key_management.key_not_found', fingerprint: argument)
           when 1
             begin
               keys.first.delete!
@@ -60,6 +67,7 @@ module Schleuder
               I18n.t('keyword_handlers.key_management.not_deletable', key_string: keys.first.oneline)
             end
           else
+            # Shouldn't happen, but who knows.
             I18n.t('errors.too_many_matching_keys', {
                 input: argument,
                 key_strings: keys.map(&:to_s).join("\n")

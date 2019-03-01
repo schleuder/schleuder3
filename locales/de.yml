@@ -92,6 +92,7 @@ de:
 
         %{keyword}: %{arguments}
     key_management:
+      key_not_found: "Fehler: Keinen Schlüssel mit Fingerabdruck '%{fingerprint}' gefunden."
       deleted: "Gelöscht: %{key_string}"
       not_deletable: "Darf nicht gelöscht werden: %{key_string}"
       no_imports: In deiner Email konnten keine Schlüssel gefunden werden. :(
