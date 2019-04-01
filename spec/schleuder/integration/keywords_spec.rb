@@ -2799,40 +2799,6 @@ Error: Resending to <bla@foo> failed (0 keys found, of which 0 can be used.
     teardown_list_and_mailer(list)
   end
 
-  it 'x-get-version with deprecated x-listname keyword' do
-    list = create(:list)
-    list.subscribe('schleuder@example.org', '59C71FB38AEE22E091C78259D06350440F759BD3', true)
-    ENV['GNUPGHOME'] = list.listdir
-    mail = Mail.new
-    mail.to = list.request_address
-    mail.from = list.admins.first.email
-    gpg_opts = {
-      encrypt: true,
-      keys: {list.request_address => list.fingerprint},
-      sign: true,
-      sign_as: list.admins.first.fingerprint
-    }
-    mail.gpg(gpg_opts)
-    mail.body = "x-listname: #{list.email}\nX-get-version\nx-stop"
-    mail.deliver
-
-    encrypted_mail = Mail::TestMailer.deliveries.first
-    Mail::TestMailer.deliveries.clear
-
-    begin
-      Schleuder::Runner.new().run(encrypted_mail.to_s, list.request_address)
-    rescue SystemExit
-    end
-    raw = Mail::TestMailer.deliveries.first
-    message = Mail.create_message_to_list(raw.to_s, list.request_address, list).setup
-
-    expect(message.to).to eql(['schleuder@example.org'])
-    expect(message.first_plaintext_part.body.to_s.lines.size).to eql(1)
-    expect(message.first_plaintext_part.body.to_s).to eql(Schleuder::VERSION)
-
-    teardown_list_and_mailer(list)
-  end
-
   it 'x-get-version with delivery disabled' do
     list = create(:list)
     list.subscribe('schleuder@example.org', '59C71FB38AEE22E091C78259D06350440F759BD3', true, false)
@@ -2847,7 +2813,7 @@ Error: Resending to <bla@foo> failed (0 keys found, of which 0 can be used.
       sign_as: list.admins.first.fingerprint
     }
     mail.gpg(gpg_opts)
-    mail.body = "x-listname: #{list.email}\nX-get-version\nx-stop"
+    mail.body = "x-list-name: #{list.email}\nX-get-version\nx-stop"
     mail.deliver
 
     encrypted_mail = Mail::TestMailer.deliveries.first

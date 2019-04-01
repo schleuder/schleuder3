@@ -1,7 +1,7 @@
 module Schleuder
   class KeywordHandlersRunner
     REGISTERED_KEYWORDS = {list: {}, request: {}}
-    RESERVED_KEYWORDS = %w[list-name listname stop]
+    RESERVED_KEYWORDS = %w[list-name stop]
 
     class << self
       attr_reader :keywords
@@ -96,7 +96,7 @@ module Schleuder
       def check_mandatory_keywords(mail, list)
         return nil if mail.keywords.blank?
 
-        listname_keyword = mail.keywords.assoc('list-name') || mail.keywords.assoc('listname')
+        listname_keyword = mail.keywords.assoc('list-name')
         if listname_keyword.blank?
           return I18n.t(:missing_listname_keyword_error)
         else
