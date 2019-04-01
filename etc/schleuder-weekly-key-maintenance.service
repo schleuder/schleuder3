@@ -1,0 +1,9 @@
+[Unit]
+Description=Schleuder weekly key maintenance
+After=local-fs.target network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/schleuder refresh_keys
+ExecStart=/usr/local/bin/schleuder check_keys
+User=schleuder

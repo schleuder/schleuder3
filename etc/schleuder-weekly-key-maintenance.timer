@@ -1,0 +1,9 @@
+[Unit]
+Description=Schleuder weekly key maintenance
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+
+[Install]
+WantedBy=timers.target

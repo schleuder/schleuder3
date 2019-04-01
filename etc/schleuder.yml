@@ -22,7 +22,7 @@ filters_dir: /usr/local/lib/schleuder/filters
 log_level: warn
 
 # Which keyserver to refresh keys from (used by `schleuder refresh_keys`, meant
-# to be run from cron weekly).
+# to be run from cron or systemd weekly).
 # If you have gnupg 2.1, we strongly suggest to use a hkps-keyserver:
 #keyserver: hkps://hkps.pool.sks-keyservers.net
 # If you have gnupg 2.1 and TOR running locally, use a onion-keyserver:

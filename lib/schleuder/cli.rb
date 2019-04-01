@@ -53,7 +53,7 @@ module Schleuder
       exit 1
     end
 
-    desc 'check_keys', 'Check all lists for unusable or expiring keys and send the results to the list-admins. (This is supposed to be run from cron weekly.)'
+    desc 'check_keys', 'Check all lists for unusable or expiring keys and send the results to the list-admins. (This is supposed to be run from cron or systemd weekly.)'
     def check_keys
       List.all.each do |list|
         I18n.locale = list.language
@@ -68,7 +68,7 @@ module Schleuder
       permission_notice
     end
 
-    desc 'refresh_keys [list1@example.com]', "Refresh all keys of all list from the keyservers sequentially (one by one or on the passed list). (This is supposed to be run from cron weekly.)"
+    desc 'refresh_keys [list1@example.com]', 'Refresh all keys of all list from the keyservers sequentially (one by one or on the passed list). (This is supposed to be run from cron or systemd weekly.)'
     def refresh_keys(list=nil)
       GPGME::Ctx.send_notice_if_gpg_does_not_know_import_filter
       work_on_lists(:refresh_keys,list)

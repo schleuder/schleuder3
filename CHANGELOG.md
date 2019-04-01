@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 * 'X-STOP': To use any keyword, you *must* now also use the new keyword 'X-STOP' to mark where to stop looking for keywords. This enables looking for keyword arguments in multiple lines, e.g. for X-RESEND with long, wrapped lines.
+* Provide systemd configs for weekly key maintenance. This relies on a working systemd-timesyncd. (#422)
 
 ### Changed
 
