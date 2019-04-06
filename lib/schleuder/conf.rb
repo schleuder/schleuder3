@@ -17,7 +17,7 @@ module Schleuder
     DEFAULTS = {
       'lists_dir' => '/var/lib/schleuder/lists',
       'listlogs_dir' => '/var/lib/schleuder/lists',
-      'keyword_handlers_dir' => '/usr/local/lib/schleuder/schleuder/keyword_handlers',
+      'keyword_handlers_dir' => '/usr/local/lib/schleuder/keyword_handlers',
       'filters_dir' => '/usr/local/lib/schleuder/filters',
       'log_level' => 'warn',
       'superadmin' => 'root@localhost',
