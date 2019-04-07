@@ -83,7 +83,7 @@ module Schleuder
 
       # Check if lists_dir contains v2-data.
       if Dir.glob("#{Conf.lists_dir}/*/*/members.conf").size > 0
-        msg = "Lists directory #{Conf.lists_dir} appears to contain data from a Schleuder version 2.x installation.\nPlease move it out of the way or configure a different `lists_dir` in `#{ENV['SCHLEUDER_CONFIG']}`.\nTo migrate lists from Schleuder v2 to Schleuder v3 please use `schleuder migrate_v2_list` after the installation succeeded."
+        msg = "Lists directory #{Conf.lists_dir} appears to contain data from a Schleuder version 2.x installation.\nPlease remove this data and retry the installation. Schleuder version 4 doesn't support migrating these old lists, in case you need to, please install Schleuder version 3 first."
         fatal msg, 2
       end
 
