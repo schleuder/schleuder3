@@ -254,8 +254,6 @@ en:
   missed_message_due_to_unusable_key: "You missed an email from %{list_email} because your subscription isn't associated with a (usable) OpenPGP key. Please fix this."
   refresh_keys: Keys update
   refresh_keys_intro: "Refreshing all keys from the keyring of list %{email} resulted in this:"
-  pin_keys: Keys pinning
-  pin_keys_intro: "While checking all subscriptions of list %{email} we were pinning a matching key for the following subscriptions:"
   key_updated: |
     This key was updated (%{states}):
     %{key_oneline}

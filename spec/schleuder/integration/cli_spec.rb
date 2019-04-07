@@ -78,66 +78,6 @@ describe 'cli' do
     end
   end
 
-  context '#pin_keys' do
-    it 'pins fingerprints on not yet set keys' do
-      list = create(:list)
-      list.subscribe("admin@example.org", nil, true)
-      list.subscribe("schleuder2@example.org", nil, false)
-      list.import_key(File.read('spec/fixtures/example_key.txt'))
-      expect(list.subscriptions_without_fingerprint.size).to eq 2
-
-      Cli.new.pin_keys
-
-      expect(list.subscriptions_without_fingerprint.size).to eq 1
-      expect(list.subscriptions_without_fingerprint.collect(&:email)).to eq ['admin@example.org']
-
-      mail = Mail::TestMailer.deliveries.first
-
-      expect(Mail::TestMailer.deliveries.length).to eq 1
-      expect(mail.first_plaintext_part.body.to_s).to eql("While checking all subscriptions of list #{list.email} we were pinning a matching key for the following subscriptions:\n\nschleuder2@example.org: C4D60F8833789C7CAA44496FD3FFA6613AB10ECE")
-
-      teardown_list_and_mailer(list)
-    end
-    it 'only works on the specific list' do
-      list1 = create(:list)
-      list2 = create(:list)
-      [list1,list2].each do |list|
-        list.subscribe("admin@example.org", nil, true)
-        list.subscribe("schleuder2@example.org", nil, false)
-        list.import_key(File.read('spec/fixtures/example_key.txt'))
-        expect(list.subscriptions_without_fingerprint.size).to eq 2
-      end
-
-      Cli.new.pin_keys list1.email
-
-      expect(list1.subscriptions_without_fingerprint.size).to eq 1
-      expect(list1.subscriptions_without_fingerprint.collect(&:email)).to eq ['admin@example.org']
-      expect(list2.subscriptions_without_fingerprint.size).to eq 2
-
-      mail = Mail::TestMailer.deliveries.first
-
-      expect(Mail::TestMailer.deliveries.length).to eq 1
-      expect(mail.first_plaintext_part.body.to_s).to eql("While checking all subscriptions of list #{list1.email} we were pinning a matching key for the following subscriptions:\n\nschleuder2@example.org: C4D60F8833789C7CAA44496FD3FFA6613AB10ECE")
-
-      teardown_list_and_mailer(list1)
-      teardown_list_and_mailer(list2)
-    end
-
-    it 'does not report anything if nothing was done' do
-      list = create(:list)
-      list.subscribe("admin@example.org", nil, true)
-      list.subscribe("schleuder2@example.org", nil, false)
-      expect(list.subscriptions_without_fingerprint.size).to eq 2
-
-      Cli.new.pin_keys
-
-      expect(list.subscriptions_without_fingerprint.size).to eq 2
-      expect(Mail::TestMailer.deliveries.empty?).to eq true
-
-      teardown_list_and_mailer(list)
-    end
-  end
-
   context '#install' do
     it 'exits if a shell-process failed' do
       dbfile = Conf.database["database"]

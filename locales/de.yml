@@ -250,8 +250,6 @@ de:
   missed_message_due_to_unusable_key: "Du hast eine Email von %{list_email} verpasst weil mit deinem Abo kein (benutzbarer) OpenPGP-Schlüssel verknüpft ist. Bitte kümmere dich darum."
   refresh_keys: Schlüsselaktualisierung
   refresh_keys_intro: "Die Aktualisierung aller Schlüssel des Schlüsselrings für Liste %{email} ergab dies:"
-  pin_keys: Schlüsselpinning
-  pin_keys_intro: "Die Überprüfung aller Abos der Liste %{email} ergab, dass wir für folgende Abos einen Schlüssel zur Verwendung festgelegt haben:"
   key_updated: |
     Dieser Schlüssel wurde aktualisiert (%{states}):
     %{key_oneline}

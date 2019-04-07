@@ -14,7 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Allow to use the latest version of the gem `mail-gpg`. Our specs had been failing with versions > 0.4.2, but we found out it was our specs' fault.
 * Change the way we force gpg to never-ever interactively ask for a passphrase. This should fix problems with specific combinations of GnuPG and GPGME.
 * Drop support for GPG 2.0, require GPG 2.2.
-* Drop support to migrate lists from version 2.
+* Drop support to migrate lists from version 2. This includes pin_keys code, which looked for subscriptions without an associated key, and tried to find a distinctly matching key. Originally, this was implemented to help with a shortcoming of code which handled version 2 to version 3 migration. (#411)
 * "Plugins" are now called "keyword handlers", and they are implemented differently. If you use custom plugins you have to rewrite them (see an included keyword handler for implementation hints, it's rather simple). If you don't, this change doesn't affect you. One positive effect of this: if a message contains an unknown keyword, no keyword is being handled but the sender is sent an error message; thus we avoid half-handled messages.
 * Allow only fingerprints as argument to X-DELETE-KEY. We want to reference keys only by fingerprint, if possible (as we do with other keywords already).
 * Drop deprecated X-LISTNAME keyword. (#374)
