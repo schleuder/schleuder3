@@ -195,11 +195,9 @@ describe GPGME::Ctx do
       end
       expect(res).to match(/This key was updated \(new signatures\):\n0x98769E8A1091F36BD88403ECF71A3F8412D83889 bla@foo \d{4}-\d{2}-\d{2} \[expired: \d{4}-\d{2}-\d{2}\]/)
       expect(res).to match(/This key was updated \(new user-IDs and new signatures\):\n0x6EE51D78FD0B33DE65CCF69D2104E20E20889F66 new@example.org \d{4}-\d{2}-\d{2}/)
-      if GPGME::Ctx.sufficient_gpg_version?('2.1')
-        dirmngr_pid = `pgrep -a dirmngr | grep #{list.listdir}`.split(' ',2).first
-        # no error occurred
-        expect(dirmngr_pid).not_to be_nil
-      end
+      dirmngr_pid = `pgrep -a dirmngr | grep #{list.listdir}`.split(' ', 2).first
+      # no error occurred
+      expect(dirmngr_pid).not_to be_nil
     end
     it 'reports errors from refreshing keys' do
       list = create(:list)
@@ -209,17 +207,12 @@ describe GPGME::Ctx do
       res = list.gpg.refresh_keys(list.keys)
 
       expect(res).to include("Refreshing all keys from the keyring of list #{list.email} resulted in this")
-      if GPGME::Ctx.sufficient_gpg_version?('2.1')
-        expect(mail.to_s).to include("keyserver refresh failed: No keyserver available")
-        dirmngr_pid = `pgrep -a dirmngr | grep #{list.listdir}`.split(' ',2).first
-        expect(dirmngr_pid).not_to be_nil
-      else
-        # The wording differs slightly among versions.
-        expect(mail.to_s).to match(/gpgkeys: .* error .* connect/)
-      end
+      expect(mail.to_s).to include('keyserver refresh failed: No keyserver available')
+      dirmngr_pid = `pgrep -a dirmngr | grep #{list.listdir}`.split(' ', 2).first
+      expect(dirmngr_pid).not_to be_nil
     end
 
-    it 'does not import non-self-signatures if gpg >= 2.1.15; or else sends a warning' do
+    it 'does not import non-self-signatures' do
       list = create(:list)
       list.delete_key('87E65ED2081AE3D16BE4F0A5EBDBE899251F2412')
       list.subscribe('admin@example.org', nil, true)
@@ -232,16 +225,8 @@ describe GPGME::Ctx do
       # GPGME apparently does not show signatures correctly in some cases, so we better use gpgcli.
       signature_output = list.gpg.class.gpgcli(['--list-sigs', '87E65ED2081AE3D16BE4F0A5EBDBE899251F2412'])[1].grep(/0F759BD3.*schleuder@example.org/)
 
-      if GPGME::Ctx.sufficient_gpg_version?('2.1.15')
-        expect(res).to be_empty
-        expect(signature_output).to be_empty
-      else
-        message = Mail::TestMailer.deliveries.first
-        expect(message.to).to eql([Conf.superadmin])
-        expect(message.subject).to eql('Schleuder installation problem')
-        expect(res).not_to be_empty
-        expect(signature_output).not_to be_empty
-      end
+      expect(res).to be_empty
+      expect(signature_output).to be_empty
     end
 
   end
