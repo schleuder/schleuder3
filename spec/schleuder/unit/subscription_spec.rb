@@ -116,6 +116,12 @@ describe Schleuder::Subscription do
     expect(subscription3.errors[:email]).to eql(["is already subscribed"])
   end
 
+  it 'downcases all letters of an email address' do
+    subscription = create(:subscription, email: 'AbcDEF@example.net')
+
+    expect(subscription.email).to eq('abcdef@example.net')
+  end
+
   describe "#fingerprint" do
     it "transforms the fingerprint to upper case" do
       subscription = Schleuder::Subscription.new(email: "example@example.org", fingerprint: "c4d60f8833789c7caa44496fd3ffa6613ab10ece")
@@ -131,4 +137,3 @@ describe Schleuder::Subscription do
     expect(subscription.fingerprint).to eq "99991100010"
   end
 end
-
