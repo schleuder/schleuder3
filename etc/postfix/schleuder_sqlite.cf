@@ -15,7 +15,7 @@
 # it is not recommended to use this table for more powerful
 # configuration options (e.g. transport_maps) because it could give
 # the schleuder user (which can write the given sqlite database) the
-# power to change settings for for other mail handled by this Postfix
+# power to change settings for other mail handled by this Postfix
 # instance.
 
 dbpath = /var/lib/schleuder/db.sqlite
