@@ -68,13 +68,9 @@ describe 'cli' do
       expect(Process).to receive(:euid).and_return(0)
       list = create(:list)
 
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-      Cli.new.refresh_keys(list.email)
-      output = $stdout.string
-      $stdout = orig_stdout
-
-      expect(output).to include("Warning: this process was run as root")
+      expect do
+        Cli.new.refresh_keys(list.email)
+      end.to output(/^Warning: this process was run as root/).to_stdout
     end
   end
 
@@ -97,13 +93,9 @@ describe 'cli' do
     it "warns about file system permissions if it was run as root" do
       expect(Process).to receive(:euid).and_return(0)
 
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-      Cli.new.install
-      output = $stdout.string
-      $stdout = orig_stdout
-
-      expect(output).to include("Warning: this process was run as root")
+      expect do
+        Cli.new.install
+      end.to output(/^Warning: this process was run as root/).to_stdout
     end
   end
 
@@ -119,13 +111,9 @@ describe 'cli' do
     it "warns about file system permissions if it was run as root" do
       expect(Process).to receive(:euid).and_return(0)
 
-      orig_stdout = $stdout
-      $stdout = StringIO.new
-      Cli.new.check_keys
-      output = $stdout.string
-      $stdout = orig_stdout
-
-      expect(output).to include("Warning: this process was run as root")
+      expect do
+        Cli.new.check_keys
+      end.to output(/^Warning: this process was run as root/).to_stdout
     end
   end
 end
