@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors      = 'schleuder dev team'
   s.email        = "team@schleuder.org"
   s.homepage     = "https://schleuder.org/"
-  s.summary      = "Schleuder is a gpg-enabled mailing list manager with remailing-capabilities."
+  s.summary      = "Schleuder is an encrypting mailing list manager with remailing-capabilities."
   s.description  = "Schleuder is a group's email-gateway: subscribers can exchange encrypted emails among themselves, receive emails from non-subscribers and send emails to non-subscribers via the list.\n\n(Please note: For some platforms there's a better way of installing Schleuder than `gem install`. See <https://schleuder.org/schleuder/docs/server-admins.html#installation> for details.)"
   s.files        = `git ls-files lib locales etc db README.md Rakefile`.split
   s.executables =  %w[schleuder schleuder-api-daemon]
