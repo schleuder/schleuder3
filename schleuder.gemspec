@@ -15,9 +15,6 @@ Gem::Specification.new do |s|
   s.executables =  %w[schleuder schleuder-api-daemon]
   s.platform     = Gem::Platform::RUBY
   s.require_path = 'lib'
-  # TODO: extend/replace expired cert
-  #s.signing_key = "#{ENV['HOME']}/.gem/schleuder-gem-private_key.pem"
-  #s.cert_chain  = ['gem-public_cert.pem']
   s.license = 'GPL-3.0'
   s.metadata = {
     "homepage_uri"      => "https://schleuder.org/",
