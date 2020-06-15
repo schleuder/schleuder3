@@ -89,7 +89,7 @@ describe "protected subject" do
   it "works with mutt protected headers" do
     list = create(:list)
     list.subscribe("schleuder@example.org", '59C71FB38AEE22E091C78259D06350440F759BD3', true)
-    mail = Mail.read("spec/fixtures/mutt_protected_headers.txt")
+    mail = Mail.read("spec/fixtures/mails/mutt_protected_headers.txt")
     mail.deliver
 
     encrypted_mail = Mail::TestMailer.deliveries.first
