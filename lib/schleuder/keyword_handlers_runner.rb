@@ -1,7 +1,7 @@
 module Schleuder
   class KeywordHandlersRunner
     REGISTERED_KEYWORDS = {list: {}, request: {}}
-    RESERVED_KEYWORDS = %w[list-name stop]
+    RESERVED_KEYWORDS = %w[list-name]
 
     class << self
       attr_reader :keywords
@@ -104,10 +104,6 @@ module Schleuder
           if ! [list.email, list.request_address].include?(listname_args.first)
             return I18n.t(:wrong_listname_keyword_error)
           end
-        end
-
-        if mail.keywords.assoc('stop').blank?
-          return I18n.t('errors.keyword_x_stop_missing')
         end
       end
 

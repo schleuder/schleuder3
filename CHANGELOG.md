@@ -7,11 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-* 'X-STOP': To use any keyword, you *must* now also use the new keyword 'X-STOP' to mark where to stop looking for keywords. This enables looking for keyword arguments in multiple lines, e.g. for X-RESEND with long, wrapped lines.
+* Mandatory blank line: To separate keywords from email content, you *must* now insert a blank line between them.
 * Provide systemd configs for weekly key maintenance. This relies on a working systemd-timesyncd. (#422)
 
 ### Changed
 
+* Keyword arguments are now also looked for in the following lines, until a blank line or a new keyword-line is encountered.
 * Allow to use the latest version of the gem `mail-gpg`. Our specs had been failing with versions > 0.4.2, but we found out it was our specs' fault.
 * Change the way we force gpg to never-ever interactively ask for a passphrase. This should fix problems with specific combinations of GnuPG and GPGME.
 * Drop support for Ruby 2.1, 2.2, 2.3 and 2.4, require Ruby 2.5.

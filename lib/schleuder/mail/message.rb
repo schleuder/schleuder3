@@ -443,6 +443,7 @@ module Mail
     def extract_keywords(content_lines)
       keywords = []
       in_keyword_block = false
+      found_blank_line = false
       content_lines.each_with_index do |line, i|
         if match = line.match(/^x-([^:\s]*)[:\s]*(.*)/i)
           keyword = match[1].strip.downcase
@@ -452,15 +453,21 @@ module Mail
 
           # Set this line to nil to have it stripped from the message.
           content_lines[i] = nil
-
-          if keyword == 'stop'
-            # This stops the parsing.
-            break
-          end
+        elsif line.blank? && keywords.any?
+          # Look for blank lines after the first keyword had been found.
+          # These might mark the end of the keywords-block — unless more keywords follow.
+          found_blank_line = true
+          # Swallow the line: before the actual content begins we want to drop blank lines.
+          content_lines[i] = nil
+          # Stop interpreting the following line as argument to the previous keyword.
+          in_keyword_block = false
         elsif in_keyword_block == true
           # Interpret line as arguments to the previous keyword.
           keywords[-1][-1] += line.downcase.strip.split(/[,; ]{1,}/)
           content_lines[i] = nil
+        elsif found_blank_line
+          # Any line that isn't blank and does not start with "x-" stops the keyword parsing.
+          break
         end
       end
       [keywords, content_lines.compact]

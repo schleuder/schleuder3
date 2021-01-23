@@ -227,32 +227,32 @@ describe Mail::Message do
   end
 
   context '.keywords' do
-    it 'stops looking for keywords when X-STOP is met' do
-      string = "x-something: bla\nx-somethingelse: ok\nx-stop\nx-toolate: tralafiti\n"
+    it 'stops looking for keywords when a blank line that is not followed by another keyword is met' do
+      string = "x-something: bla\nx-somethingelse: ok\n\nsomething\nx-toolate: tralafiti\n"
       m = Mail.new
       m.body = string
       m.to_s
 
       keywords = m.keywords
 
-      expect(keywords).to eql([['something', ['bla']], ['somethingelse', ['ok']], ['stop', []]])
-      expect(m.body.to_s).to eql("x-toolate: tralafiti\n")
+      expect(keywords).to eql([['something', ['bla']], ['somethingelse', ['ok']]])
+      expect(m.body.to_s).to eql("something\nx-toolate: tralafiti\n")
     end
 
     it 'reads multiple lines as keyword arguments' do
-      string = "x-something: first\nsecond\nthird\nx-somethingelse: ok\nx-stop\ntralafiti\n"
+      string = "x-something: first\nsecond\nthird\nx-somethingelse: ok\n\ntralafiti\n"
       m = Mail.new
       m.body = string
       m.to_s
 
       keywords = m.keywords
 
-      expect(keywords).to eql([['something', ['first', 'second', 'third']], ['somethingelse', ['ok']], ['stop', []]])
+      expect(keywords).to eql([['something', ['first', 'second', 'third']], ['somethingelse', ['ok']]])
       expect(m.body.to_s).to eql("tralafiti\n")
     end
 
-    it 'takes the whole rest of the body as keyword argument if no X-STOP is present' do
-      string = "x-something: first\nsecond\nthird\n\n\nok\ntralafiti\n"
+    it 'takes the whole rest of the body as keyword argument if blank lines are present' do
+      string = "x-something: first\nsecond\nthird\nok\ntralafiti\n"
       m = Mail.new
       m.body = string
       m.to_s
@@ -264,26 +264,38 @@ describe Mail::Message do
     end
 
     it 'drops empty lines in keyword arguments parsing' do
-      string = "x-something: first\nthird\nx-somethingelse: ok\nx-stop\ntralafiti\n"
+      string = "x-something: first\nthird\n\nx-somethingelse: ok\n\ntralafiti\n"
       m = Mail.new
       m.body = string
       m.to_s
 
       keywords = m.keywords
 
-      expect(keywords).to eql([['something', ['first', 'third']], ['somethingelse', ['ok']], ['stop', []]])
+      expect(keywords).to eql([['something', ['first', 'third']], ['somethingelse', ['ok']]])
+      expect(m.body.to_s).to eql("tralafiti\n")
+    end
+
+    it 'drops multiple empty lines between keywords and content' do
+      string = "x-something: first\nthird\nx-somethingelse: ok\n\n\n\ntralafiti\n"
+      m = Mail.new
+      m.body = string
+      m.to_s
+
+      keywords = m.keywords
+
+      expect(keywords).to eql([['something', ['first', 'third']], ['somethingelse', ['ok']]])
       expect(m.body.to_s).to eql("tralafiti\n")
     end
 
     it 'splits lines into words and downcases them in keyword arguments' do
-      string = "x-something: first\nSECOND     end\nthird\nx-somethingelse: ok\nx-stop\ntralafiti\n"
+      string = "x-something: first\nSECOND     end\nthird\nx-somethingelse: ok\n\ntralafiti\n"
       m = Mail.new
       m.body = string
       m.to_s
 
       keywords = m.keywords
 
-      expect(keywords).to eql([['something', ['first', 'second', 'end', 'third']], ['somethingelse', ['ok']], ['stop', []]])
+      expect(keywords).to eql([['something', ['first', 'second', 'end', 'third']], ['somethingelse', ['ok']]])
       expect(m.body.to_s).to eql("tralafiti\n")
     end
   end

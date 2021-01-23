@@ -34,21 +34,10 @@ describe 'KeywordHandlersRunner' do
     expect(output).to eql(['Your message contained an incorrect "X-LIST-NAME" keyword. The keyword argument must match the email address of this list.'])
   end
 
-  it 'requires X-STOP' do
-    list = create(:list)
-    mail = Mail.new
-    mail.body = "x-list-keys\nx-list-name: #{list.email}"
-    mail.to_s
-
-    output = KeywordHandlersRunner.run(mail: mail, list: list, type: :request)
-
-    expect(output).to eql(["Your message lacked the keyword 'X-STOP'. If you use keywords in a message, you must indicate with 'X-STOP' where to stop looking for further keywords."])
-  end
-
   it 'rejects unknown keywords' do
     list = create(:list)
     mail = Mail.new
-    mail.body = "x-list-subscriptions\nx-blabla\nx-list-name: #{list.email}\nx-stop"
+    mail.body = "x-list-subscriptions\nx-blabla\nx-list-name: #{list.email}"
     mail.to_s
 
     output = KeywordHandlersRunner.run(mail: mail, list: list, type: :request)
@@ -64,7 +53,7 @@ describe 'KeywordHandlersRunner' do
   it 'loads additional keyword handlers' do
     list = create(:list)
     mail = Mail.new
-    mail.body = "x-custom-keyword\nx-list-name: #{list.email}\nx-stop"
+    mail.body = "x-custom-keyword\nx-list-name: #{list.email}\n"
     mail.to_s
 
     output = KeywordHandlersRunner.run(mail: mail, list: list, type: :request)
@@ -78,7 +67,7 @@ describe 'KeywordHandlersRunner' do
     list.subscribe('schleuder@example.org', '59C71FB38AEE22E091C78259D06350440F759BD3', true)
     mail = Mail.new
     mail.list = list
-    mail.body = "x-list-subscriptions\nx-list-name: #{list.email}\nx-stop"
+    mail.body = "x-list-subscriptions\nx-list-name: #{list.email}\n"
     mail.to_s
 
     output = KeywordHandlersRunner.run(mail: mail, list: list, type: :request)
@@ -99,7 +88,7 @@ describe 'KeywordHandlersRunner' do
     list.subscribe('subscription@example.org', 'C4D60F8833789C7CAA44496FD3FFA6613AB10ECE', false)
     mail = Mail.new
     mail.list = list
-    mail.body = "x-list-subscriptions\nx-list-name: #{list.email}\nx-stop"
+    mail.body = "x-list-subscriptions\nx-list-name: #{list.email}"
     mail.to_s
 
     output = KeywordHandlersRunner.run(mail: mail, list: list, type: :request)
