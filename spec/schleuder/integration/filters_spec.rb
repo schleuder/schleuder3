@@ -23,7 +23,7 @@ describe "running filters" do
       Mail::TestMailer.deliveries.clear
 
       output = process_mail(big_email.to_s, list.email)
-      expect(output.message).to include(I18n.t('errors.message_too_big', { allowed_size: list.max_message_size_kb }))
+      expect(output.message).to include(I18n.t('errors.message_too_big', allowed_size: list.max_message_size_kb))
 
       teardown_list_and_mailer(list)
     end

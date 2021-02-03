@@ -189,7 +189,7 @@ RSpec.configure do |config|
     end
   end
 
-  def t(*args)
-    I18n.t(*args)
+  def t(key, **kwargs)
+    I18n.t(key, **kwargs)
   end
 end

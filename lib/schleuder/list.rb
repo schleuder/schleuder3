@@ -179,18 +179,18 @@ module Schleuder
 
       text = ''
       expiring.each do |key,days|
-        text << I18n.t('key_expires', {
+        text << I18n.t('key_expires',
                           days: days,
                           key_summary: key.summary
-                      })
+                      )
         text << "\n"
       end
 
       unusable.each do |key,usability_issue|
-        text << I18n.t('key_unusable', {
+        text << I18n.t('key_unusable',
                           usability_issue: usability_issue,
                           key_summary: key.summary
-                      })
+                      )
         text << "\n"
       end
       text

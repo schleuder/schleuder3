@@ -164,8 +164,8 @@ module GPGME
       import_states = translate_import_data(gpgoutput)
       strings = import_states.map do |fingerprint, states|
         key = find_distinct_key(fingerprint)
-        I18n.t(locale_key, { key_summary: key.summary,
-                             states: states.to_sentence })
+        I18n.t(locale_key, key_summary: key.summary,
+                           states: states.to_sentence)
       end
       strings
     end

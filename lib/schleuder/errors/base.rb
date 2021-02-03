@@ -1,8 +1,8 @@
 module Schleuder
   module Errors
     class Base < StandardError
-      def t(*args)
-        I18n.t(*args)
+      def t(key, **kwargs)
+        I18n.t(key, **kwargs)
       end
 
       def to_s
