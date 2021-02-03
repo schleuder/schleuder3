@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 * Mandatory blank line: To separate keywords from email content, you *must* now insert a blank line between them.
 * Provide systemd configs for weekly key maintenance. This relies on a working systemd-timesyncd. (#422)
+* Support for Ruby 3.0.
 
 ### Changed
 
@@ -22,6 +23,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Allow only fingerprints as argument to X-DELETE-KEY. We want to reference keys only by fingerprint, if possible (as we do with other keywords already).
 * Drop deprecated X-LISTNAME keyword. (#374)
 * Downcase email addresses: Email addresses are downcased before saving.
+* Update the dependency 'activerecord' to version 6.0.
+* Update the dependency 'factory_bot' to version 6.0.
+* Update the dependency 'sqlite3' to version 1.4.
+* Update the dependency 'database_cleaner' to version 2.0.
 
 
 ## [3.6.0] / 2021-02-07
