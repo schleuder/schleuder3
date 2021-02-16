@@ -10,7 +10,7 @@ For more details see <https://schleuder.org/docs/>.
 
 Requirements
 ------------
-* ruby >=2.1
+* ruby >=2.5
 * gnupg 2.0.x, or >=2.1.16
 * gpgme
 * sqlite3

@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
     "bug_tracker_uri"   => "https://0xacab.org/schleuder/schleuder/issues",
     "mailing_list_uri"  => "https://lists.nadir.org/mailman/listinfo/schleuder-announce/",
   }
-  s.required_ruby_version = ">= 2.1.0"
+  s.required_ruby_version = ">= 2.5.0"
   # Explicitly depend on BigDecimal 1.4, because later versions are
   # incompatible with activesupport 4.2, which is a dependency of activerecord 4.2.
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
