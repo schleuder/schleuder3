@@ -99,13 +99,13 @@ de:
       key_import_status:
         imported: |
           Dieser Schlüssel wurde neu hinzugefügt:
-          %{key_oneline}
+          %{key_summary}
         updated: |
           Dieser Schlüssel wurde aktualisiert:
-          %{key_oneline}
+          %{key_summary}
         unchanged: |
           Dieser Schlüssel wurde nicht verändert:
-          %{key_oneline}
+          %{key_summary}
         error: |
           Der Schlüssel mit diesem Fingerabdruck konnte aus unbekanntem Grund nicht hinzugefügt werden:
           %{fingerprint} 
@@ -243,19 +243,19 @@ de:
   check_keys_intro: "Bitte kümmere dich um die folgenden Schlüssel für Liste %{email}."
   key_expires: |
     Dieser Schlüssel läuft in %{days} Tagen ab:
-    %{key_oneline}
+    %{key_summary}
   key_unusable: |
     Dieser Schlüssel ist %{usability_issue}:
-    %{key_oneline}
+    %{key_summary}
   missed_message_due_to_unusable_key: "Du hast eine Email von %{list_email} verpasst weil mit deinem Abo kein (benutzbarer) OpenPGP-Schlüssel verknüpft ist. Bitte kümmere dich darum."
   refresh_keys: Schlüsselaktualisierung
   refresh_keys_intro: "Die Aktualisierung aller Schlüssel des Schlüsselrings für Liste %{email} ergab dies:"
   key_updated: |
     Dieser Schlüssel wurde aktualisiert (%{states}):
-    %{key_oneline}
+    %{key_summary}
   key_fetched: |
     Dieser Schlüssel wurde geholt (%{states}):
-    %{key_oneline}
+    %{key_summary}
   import_states:
     unchanged: unverändert
     new_key: neuer Schlüssel

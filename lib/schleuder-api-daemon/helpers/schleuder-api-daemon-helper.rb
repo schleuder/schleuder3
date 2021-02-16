@@ -103,7 +103,7 @@ module SchleuderApiDaemonHelper
         expiry: key.expires,
         generated_at: key.generated_at,
         primary_uid: key.primary_uid.uid,
-        oneline: key.oneline,
+        key_summary: key.summary,
         trust_issues: key.usability_issue
       }
       if include_keydata

@@ -32,7 +32,7 @@ module Schleuder
           else
             key = @list.gpg.find_distinct_key(import_status.fingerprint)
             if key
-              out << I18n.t("keyword_handlers.key_management.key_import_status.#{import_status.action}", key_oneline: key.oneline)
+              out << I18n.t("keyword_handlers.key_management.key_import_status.#{import_status.action}", key_summary: key.summary)
             end
           end
         end
@@ -62,9 +62,9 @@ module Schleuder
           when 1
             begin
               keys.first.delete!
-              I18n.t('keyword_handlers.key_management.deleted', key_string: keys.first.oneline)
+              I18n.t('keyword_handlers.key_management.deleted', key_string: keys.first.summary)
             rescue GPGME::Error::Conflict
-              I18n.t('keyword_handlers.key_management.not_deletable', key_string: keys.first.oneline)
+              I18n.t('keyword_handlers.key_management.not_deletable', key_string: keys.first.summary)
             end
           else
             # Shouldn't happen, but who knows.

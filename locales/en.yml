@@ -103,13 +103,13 @@ en:
       key_import_status:
         imported: |
           This key was newly added:
-          %{key_oneline}
+          %{key_summary}
         updated: |
           This key was updated:
-          %{key_oneline}
+          %{key_summary}
         unchanged: |
           This key was not changed:
-          %{key_oneline}
+          %{key_summary}
         error: |
           The key with this fingerprint could not be added due to an unknown error:
           %{fingerprint} 
@@ -247,19 +247,19 @@ en:
   check_keys_intro: "Please take care of these keys for list %{email}."
   key_expires: |
     This key expires in %{days} days:
-    %{key_oneline}
+    %{key_summary}
   key_unusable: |
     This key is %{usability_issue}:
-    %{key_oneline}
+    %{key_summary}
   missed_message_due_to_unusable_key: "You missed an email from %{list_email} because your subscription isn't associated with a (usable) OpenPGP key. Please fix this."
   refresh_keys: Keys update
   refresh_keys_intro: "Refreshing all keys from the keyring of list %{email} resulted in this:"
   key_updated: |
     This key was updated (%{states}):
-    %{key_oneline}
+    %{key_summary}
   key_fetched: |
     This key was fetched (%{states}):
-    %{key_oneline}
+    %{key_summary}
   import_states:
     unchanged: unchanged
     new_key: new key
