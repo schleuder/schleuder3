@@ -101,7 +101,7 @@ describe Mail::Message do
     it 'adds a configured subject prefix' do
       list = create(:list)
       list.subject_prefix = '[prefix]'
-      list.subscribe('admin@example.org',nil,true)
+      list.subscribe('admin@example.org', nil, true)
       mail = Mail.new
       mail.from 'someone@example.org'
       mail.to list.email
@@ -116,7 +116,7 @@ describe Mail::Message do
     it 'adds a configured subject prefix without subject' do
       list = create(:list)
       list.subject_prefix = '[prefix]'
-      list.subscribe('admin@example.org',nil,true)
+      list.subscribe('admin@example.org', nil, true)
       mail = Mail.new
       mail.from 'someone@example.org'
       mail.to list.email
@@ -130,7 +130,7 @@ describe Mail::Message do
     it 'does not add a subject prefix if already present' do
       list = create(:list)
       list.subject_prefix = '[prefix]'
-      list.subscribe('admin@example.org',nil,true)
+      list.subscribe('admin@example.org', nil, true)
       mail = Mail.new
       mail.from 'someone@example.org'
       mail.to list.email
@@ -171,38 +171,38 @@ describe Mail::Message do
   context 'makes a pseudo header' do
     it 'with key / value' do
       mail = Mail.new
-      ph = mail.make_pseudoheader('notice','some value')
+      ph = mail.make_pseudoheader('notice', 'some value')
       expect(ph).to eql('Notice: some value')
     end
 
     it 'without value' do
       mail = Mail.new
-      ph = mail.make_pseudoheader(:key,nil)
+      ph = mail.make_pseudoheader(:key, nil)
       expect(ph).to eql('Key: ')
     end
 
     it 'with empty value' do
       mail = Mail.new
-      ph = mail.make_pseudoheader(:key,'')
+      ph = mail.make_pseudoheader(:key, '')
       expect(ph).to eql('Key: ')
     end
 
     it 'that is getting wrapped' do
       mail = Mail.new
-      ph = mail.make_pseudoheader('notice','adds list#public_footer as last mime-part without changing its value adds list#public_footer as last mime-part without changing its value')
+      ph = mail.make_pseudoheader('notice', 'adds list#public_footer as last mime-part without changing its value adds list#public_footer as last mime-part without changing its value')
       expect(ph).to eql("Notice: adds list#public_footer as last mime-part without changing its value\n  adds list#public_footer as last mime-part without changing its value")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
 
     it 'that multiline are getting wrapped' do
       mail = Mail.new
-      ph = mail.make_pseudoheader('notice',"adds list#public_footer as last mime-part\nwithout changing its value adds list#public_footer as last mime-part without changing its value")
+      ph = mail.make_pseudoheader('notice', "adds list#public_footer as last mime-part\nwithout changing its value adds list#public_footer as last mime-part without changing its value")
       expect(ph).to eql("Notice: adds list#public_footer as last mime-part\n  without changing its value adds list#public_footer as last mime-part without\n  changing its value")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
     it 'that single multiline are getting indented' do
       mail = Mail.new
-      ph = mail.make_pseudoheader('notice',"on line 1\non line 2 but indented")
+      ph = mail.make_pseudoheader('notice', "on line 1\non line 2 but indented")
       expect(ph).to eql("Notice: on line 1\n  on line 2 but indented")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end

@@ -544,7 +544,7 @@ describe Schleuder::Runner do
       GPGME::Ctx.new({armor: true}) do |ctx|
         ctx.add_signer(*GPGME::Key.find(:secret, '59C71FB38AEE22E091C78259D06350440F759BD3', :sign))
         ctx.encrypt_sign(
-          GPGME::Key.find(:public,list.fingerprint, :encrypt),
+          GPGME::Key.find(:public, list.fingerprint, :encrypt),
           GPGME::Data.new("Content-Type: text/plain\n\nNur ein test\n"),
           cipher_data, 0
         )
@@ -581,7 +581,7 @@ describe Schleuder::Runner do
       GPGME::Ctx.new({armor: true}) do |ctx|
         ctx.add_signer(*GPGME::Key.find(:secret, '59C71FB38AEE22E091C78259D06350440F759BD3', :sign))
         ctx.encrypt_sign(
-          GPGME::Key.find(:public,list.fingerprint, :encrypt),
+          GPGME::Key.find(:public, list.fingerprint, :encrypt),
           GPGME::Data.new("Content-Type: text/plain\n\nNür ein test\n"),
           cipher_data, 0
         )

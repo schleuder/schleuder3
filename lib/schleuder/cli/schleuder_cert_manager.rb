@@ -22,7 +22,7 @@ class SchleuderCertManager
     ef.subject_certificate = cert
     ef.issuer_certificate = cert
     cert.extensions = [
-      ef.create_extension('basicConstraints','CA:TRUE', true),
+      ef.create_extension('basicConstraints', 'CA:TRUE', true),
       ef.create_extension('subjectKeyIdentifier', 'hash'),
     ]
     cert.add_extension ef.create_extension('authorityKeyIdentifier',

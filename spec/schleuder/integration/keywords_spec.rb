@@ -895,7 +895,7 @@ describe 'user sends keyword' do
   it 'x-unset-fingerprint with other email-address as admin' do
     list = create(:list)
     list.subscribe('schleuder@example.org', '59C71FB38AEE22E091C78259D06350440F759BD3', true)
-    list.subscribe('test@example.org','C4D60F8833789C7CAA44496FD3FFA6613AB10ECE')
+    list.subscribe('test@example.org', 'C4D60F8833789C7CAA44496FD3FFA6613AB10ECE')
     list.import_key(File.read('spec/fixtures/example_key.txt'))
     ENV['GNUPGHOME'] = list.listdir
     mail = Mail.new
@@ -1990,7 +1990,7 @@ EOS
     message = Mail.create_message_to_list(raw.to_s, list.email, list).setup
 
     expect(list.keys('bla@foo').size).to eql(1)
-    expect(resent_message.cc).to eql(['schleuder@example.org','bla@foo'])
+    expect(resent_message.cc).to eql(['schleuder@example.org', 'bla@foo'])
     expect(resent_message.content_type).to match(/^multipart\/encrypted.*application\/pgp-encrypted/)
     expect(message.first_plaintext_part.body.to_s).to include("ResentCc: Encrypted to
   schleuder@example.org (59C71FB38AEE22E091C78259D06350440F759BD3),
@@ -2109,7 +2109,7 @@ Error: Resending to <bla@foo> aborted due to other errors.")
     raw = Mail::TestMailer.deliveries.last
     message = Mail.create_message_to_list(raw.to_s, list.email, list).setup
 
-    expect(resent_message.cc).to eql(['foo@bla','bla@foo'])
+    expect(resent_message.cc).to eql(['foo@bla', 'bla@foo'])
     expect(resent_message.content_type).to match(/^multipart\/signed.*application\/pgp-signature/)
     expect(message.first_plaintext_part.body.to_s).to include('ResentCc: Unencrypted to foo@bla, bla@foo')
 
@@ -2148,7 +2148,7 @@ Error: Resending to <bla@foo> aborted due to other errors.")
     raw = Mail::TestMailer.deliveries.last
     message = Mail.create_message_to_list(raw.to_s, list.email, list).setup
 
-    expect(resent_message.cc).to eql(['foo@bla','bla@foo'])
+    expect(resent_message.cc).to eql(['foo@bla', 'bla@foo'])
     expect(resent_message.content_type).to match(/^multipart\/signed.*application\/pgp-signature/)
     expect(message.first_plaintext_part.body.to_s).to include('ResentCc: Unencrypted to foo@bla, bla@foo')
 

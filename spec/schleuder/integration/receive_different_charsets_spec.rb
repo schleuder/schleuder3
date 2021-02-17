@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'user sends emails with different charsets' do
   Dir['spec/fixtures/mails/charset_mails/*.eml'].each do |f|
-    it "works with #{File.basename(f,'.eml')}" do
+    it "works with #{File.basename(f, '.eml')}" do
       start_smtp_daemon
       list = create(:list)
       list.subscribe('admin@example.org', nil, true)

@@ -61,21 +61,21 @@ module Schleuder
         list.logger.debug "Loading #{filter_type}_decryption filters"
         sorted_filters.map do |filter_name|
           require all_filter_files[filter_name]
-          filter_name.split('_',2).last
+          filter_name.split('_', 2).last
         end
       end
 
       def sorted_filters
-        @sorted_filters ||= all_filter_files.keys.sort do |a,b|
-          a.split('_',2).first.to_i <=> b.split('_',2).first.to_i
+        @sorted_filters ||= all_filter_files.keys.sort do |a, b|
+          a.split('_', 2).first.to_i <=> b.split('_', 2).first.to_i
         end
       end
 
       def all_filter_files
         @all_filter_files ||= begin
           files_in_filter_dirs = Dir[*filter_dirs]
-          files_in_filter_dirs.inject({}) do |res,file|
-            filter_name = File.basename(file,'.rb')
+          files_in_filter_dirs.inject({}) do |res, file|
+            filter_name = File.basename(file, '.rb')
             res[filter_name] = file
             res
           end
@@ -83,9 +83,9 @@ module Schleuder
       end
 
       def filter_dirs
-        @filter_dirs ||= [File.join(File.dirname(__FILE__),'filters'),
+        @filter_dirs ||= [File.join(File.dirname(__FILE__), 'filters'),
                           Schleuder::Conf.filters_dir].map do |d|
-                            File.join(d,"#{filter_type}_decryption/[0-9]*_*.rb")
+                            File.join(d, "#{filter_type}_decryption/[0-9]*_*.rb")
                           end
       end
     end
