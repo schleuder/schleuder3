@@ -269,7 +269,7 @@ Layout/SpaceInsideReferenceBrackets:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: final_newline, final_blank_line
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: false
 
 # Offense count: 106

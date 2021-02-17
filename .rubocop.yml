@@ -3,3 +3,19 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
     - 'db/**/*'
+    - 'vendor/**/*'
+
+Style/StringLiterals:
+  Enabled: true
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/SpaceAfterComma:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
