@@ -898,3 +898,24 @@ Style/RedundantArgument: # (new in 1.4)
 
 Style/SwapValues: # (new in 1.1)
   Enabled: false
+
+Gemspec/DateAssignment: # (new in 1.10)
+  Enabled: false
+
+Lint/NumberedParameterAssignment: # (new in 1.9)
+  Enabled: false
+
+Lint/OrAssignmentToConstant: # (new in 1.9)
+  Enabled: false
+
+Lint/SymbolConversion: # (new in 1.9)
+  Enabled: false
+
+Lint/TripleQuotes: # (new in 1.9)
+  Enabled: false
+
+Style/HashConversion: # (new in 1.10)
+  Enabled: false
+
+Style/IfWithBooleanLiteralBranches: # (new in 1.9)
+  Enabled: false
