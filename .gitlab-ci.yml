@@ -97,12 +97,6 @@ codespell:
     - codespell -I utils/ci/codespell/ignored_words.txt -S de.yml,list.conf,vendor,.git,*.eml -q 2 -f
   stage: static
 
-ruby:2.3:
-  image: ruby:2.3
-  <<: *test_ruby
-ruby:2.4:
-  image: ruby:2.4
-  <<: *test_ruby
 ruby:2.5:
   image: ruby:2.5
   <<: *test_ruby
