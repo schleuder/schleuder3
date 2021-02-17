@@ -561,7 +561,7 @@ module Mail
       return '99' if unicode_subject.match(/auto.*reply|férias|ferias|Estarei ausente|estou ausente|vacation|vocation|(out|away).*office|on holiday|abwesenheits|autorespond|Automatische|eingangsbestätigung/i)
 
       # Feedback-Type: abuse
-      return '96' if self.to_s.match(/Feedback-Type\: abuse/i)
+      return '96' if self.to_s.match(/Feedback-Type: abuse/i)
 
       if self.parts[1]
         match_parts = self.parts[1].body.match(/(Status:.|550 |#)([245]\.[0-9]{1,3}\.[0-9]{1,3})/)
@@ -584,7 +584,7 @@ module Mail
       return true if self.subject.to_s.match(/(returned|undelivered) mail|mail delivery( failed)?|(delivery )(status notification|failure)|failure notice|undeliver(able|ed)( mail)?|return(ing message|ed) to sender/i)
       return true if self.subject.to_s.match(/auto.*reply|vacation|vocation|(out|away).*office|on holiday|abwesenheits|autorespond|Automatische|eingangsbestätigung/i)
       return true if self['precedence'].to_s.match(/auto.*(reply|responder|antwort)/i)
-      return true if self.from.to_s.match(/^(MAILER-DAEMON|POSTMASTER)\@/i)
+      return true if self.from.to_s.match(/^(MAILER-DAEMON|POSTMASTER)@/i)
       false
     end
 
@@ -609,7 +609,7 @@ module Mail
       return '5.2.0' if text.match(/The account or domain may not exist, they may be blacklisted, or missing the proper dns entries./i)
       return '5.5.4' if text.match(/554 TRANSACTION FAILED/i)
       return '4.4.1' if text.match(/Status: 4.4.1|delivery temporarily suspended|wasn't able to establish an SMTP connection/i)
-      return '5.5.0' if text.match(/550 OU\-002|Mail rejected by Windows Live Hotmail for policy reasons/i)
+      return '5.5.0' if text.match(/550 OU-002|Mail rejected by Windows Live Hotmail for policy reasons/i)
       return '5.1.2' if text.match(/PERM_FAILURE: DNS Error: Domain name not found/i)
       return '4.2.0' if text.match(/Delivery attempts will continue to be made for/i)
       return '5.5.4' if text.match(/554 delivery error:/i)
