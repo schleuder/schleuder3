@@ -27,12 +27,11 @@ t = s.each_line.map do |line|
     s = "#{line.slice(2..-2)} "
     if in_comment
       comment << s
-      nil
     else
       in_comment = true
       comment = ": #{s}"
-      nil
     end
+    nil
   else
     in_comment = false
     if in_setting

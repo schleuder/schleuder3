@@ -356,11 +356,10 @@ describe Schleuder::Runner do
         if content_part.parts.last.content_transfer_encoding == 'quoted-printable'
           expect(content_part.parts.last.encoded).to include('bug=3D86')
           expect(content_part.parts.last.encoded).not_to include('bug=86')
-          expect(content_part.parts.last.decoded).to include('bug=86')
         else
           expect(content_part.parts.last.encoded).not_to include('bug=3D86')
-          expect(content_part.parts.last.decoded).to include('bug=86')
         end
+        expect(content_part.parts.last.decoded).to include('bug=86')
 
         teardown_list_and_mailer(list)
       end
@@ -392,11 +391,10 @@ describe Schleuder::Runner do
         if content_part.parts.last.content_transfer_encoding == 'quoted-printable'
           expect(content_part.parts.last.encoded).to include('bug=3D86')
           expect(content_part.parts.last.encoded).not_to include('bug=86')
-          expect(content_part.parts.last.decoded).to include('bug=86')
         else
           expect(content_part.parts.last.encoded).not_to include('bug=3D86')
-          expect(content_part.parts.last.decoded).to include('bug=86')
         end
+        expect(content_part.parts.last.decoded).to include('bug=86')
 
         teardown_list_and_mailer(list)
       end
