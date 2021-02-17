@@ -4,6 +4,7 @@ module Schleuder::Filters
   def self.dummy(list, mail)
     nil
   end
+
   def self.stop(list, mail)
     nil
   end

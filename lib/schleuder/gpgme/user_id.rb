@@ -3,9 +3,11 @@ module GPGME
     def name
       sanitize_encoding(@name)
     end
+
     def comment
       sanitize_encoding(@comment)
     end
+
     def uid
       sanitize_encoding(@uid)
     end

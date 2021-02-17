@@ -108,6 +108,7 @@ module Schleuder
     def filters_runner_pre_decryption
       @filters_runner_pre_decryption ||= Filters::Runner.new(list, 'pre')
     end
+
     def filters_runner_post_decryption
       @filters_runner_post_decryption ||= Filters::Runner.new(list, 'post')
     end
