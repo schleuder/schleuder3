@@ -7,7 +7,7 @@ require_relative "lib/#{project}.rb"
 @filename_gem = "#{@tagname}.gem"
 @filename_tarball = "#{@tagname}.tar.gz"
 
-load "active_record/railties/databases.rake"
+load 'active_record/railties/databases.rake'
 
 # Configure ActiveRecord
 ActiveRecord::Tasks::DatabaseTasks.tap do |config|
@@ -19,7 +19,7 @@ ActiveRecord::Tasks::DatabaseTasks.tap do |config|
 end
 
 # ActiveRecord requires this task to be present
-Rake::Task.define_task("db:environment")
+Rake::Task.define_task('db:environment')
 
 namespace :db do
   # A shortcut.
@@ -42,7 +42,7 @@ end
 task :publish_gem => :website
 task :git_tag => :check_version
 
-desc "Build new version: git-tag and gem-file"
+desc 'Build new version: git-tag and gem-file'
 task :new_version => [
     :check_version,
     :edit_readme, :edit_changelog,
@@ -57,12 +57,12 @@ task :new_version => [
   ] do
 end
 
-desc "Edit CHANGELOG.md"
+desc 'Edit CHANGELOG.md'
 task :edit_changelog do
   edit_and_add_file('CHANGELOG')
 end
 
-desc "Edit README"
+desc 'Edit README'
 task :edit_readme do
   edit_and_add_file('README')
 end
@@ -72,12 +72,12 @@ task :git_tag do
   `git tag -u #{@gpguid} -s -m "Version #{@version}" #{@tagname}`
 end
 
-desc "Add changed version to git-index"
+desc 'Add changed version to git-index'
 task :git_add_version do
   `git add lib/#{project}/version.rb`
 end
 
-desc "Commit changes as new version"
+desc 'Commit changes as new version'
 task :git_commit do
   `git commit -m "Version #{@version}"`
 end
@@ -111,10 +111,10 @@ desc 'Publish gem-file to rubygems.org'
 task :publish_gem do
   puts "Really push #{@filename_gem} to rubygems.org? [yN]"
   if $stdin.gets.match(/^y/i)
-    puts "Pushing..."
+    puts 'Pushing...'
     `gem push #{@filename_gem}`
   else
-    puts "Not pushed."
+    puts 'Not pushed.'
   end
 end
 
@@ -125,7 +125,7 @@ end
 
 desc 'Describe manual release-tasks'
 task :website do
-  puts "Please remember to publish the release-notes on the website and on schleuder-announce."
+  puts 'Please remember to publish the release-notes on the website and on schleuder-announce.'
 end
 
 desc 'Check if version-tag already exists'
@@ -133,7 +133,7 @@ task :check_version do
   # Check if Schleuder::VERSION has been updated since last release
   if `git tag`.match?(/^#{@tagname}$/)
     $stderr.puts "Warning: Tag '#{@tagname}' already exists. Did you forget to update lib/#{project}/version.rb?"
-    $stderr.print "Delete tag to continue? [yN] "
+    $stderr.print 'Delete tag to continue? [yN] '
     if $stdin.gets.match(/^y/i)
       `git tag -d #{@tagname}`
     else

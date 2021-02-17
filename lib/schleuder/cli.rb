@@ -99,7 +99,7 @@ module Schleuder
         end
       end
 
-      Pathname.glob(root_dir.join("etc").join("*.yml")).each do |file|
+      Pathname.glob(root_dir.join('etc').join('*.yml')).each do |file|
         target = config_dir.join(file.basename)
         if ! target.exist?
           if target.dirname.writable?

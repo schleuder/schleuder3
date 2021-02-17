@@ -1,9 +1,9 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe 'someone sends an email to a listname-dash-address' do
   it "sends the list's key as reply to -sendkey" do
     list = create(:list)
-    list.subscribe("schleuder@example.org", nil, true)
+    list.subscribe('schleuder@example.org', nil, true)
     ENV['GNUPGHOME'] = list.listdir
     mail = Mail.new
     mail.to = list.sendkey_address
@@ -28,11 +28,11 @@ describe 'someone sends an email to a listname-dash-address' do
     expect(message.in_reply_to).to eql(mail.message_id)
   end
 
-  it "forwards the message to the admins if extension is -owner" do
+  it 'forwards the message to the admins if extension is -owner' do
     list = create(:list)
     # owner needs a key so they get email
-    list.subscribe("schleuder@example.org", '59C71FB38AEE22E091C78259D06350440F759BD3', true)
-    list.subscribe("admin@example.org", '59C71FB38AEE22E091C78259D06350440F759BD3', true)
+    list.subscribe('schleuder@example.org', '59C71FB38AEE22E091C78259D06350440F759BD3', true)
+    list.subscribe('admin@example.org', '59C71FB38AEE22E091C78259D06350440F759BD3', true)
     ENV['GNUPGHOME'] = list.listdir
     mail = Mail.new
     mail.to = list.owner_address
@@ -68,9 +68,9 @@ describe 'someone sends an email to a listname-dash-address' do
     expect(message2.parts.last.body.to_s).to eql('Please contact me directly!')
   end
 
-  it "forwards the message to the admins if extension is -bounce" do
+  it 'forwards the message to the admins if extension is -bounce' do
     list = create(:list)
-    list.subscribe("admin@example.org", nil, true)
+    list.subscribe('admin@example.org', nil, true)
     ENV['GNUPGHOME'] = list.listdir
     mail = Mail.new
     mail.to = list.bounce_address
@@ -94,13 +94,13 @@ describe 'someone sends an email to a listname-dash-address' do
     expect(signed_message_parts.last.mime_type).to eql('message/rfc822')
     expect(signed_message_parts.last.body.to_s).to include('From: mailer-daemon@example.org')
     expect(signed_message_parts.last.body.to_s).to include(mail.message_id)
-    expect(signed_message_parts.last.body.to_s).to include("Subject: something")
-    expect(signed_message_parts.last.body.to_s).to include("delivery failure")
+    expect(signed_message_parts.last.body.to_s).to include('Subject: something')
+    expect(signed_message_parts.last.body.to_s).to include('delivery failure')
   end
 
   it "forwards the message to the admins if extension is -bounce and it's a real bounce mail" do
     list = create(:list)
-    list.subscribe("admin@example.org", nil, true)
+    list.subscribe('admin@example.org', nil, true)
     ENV['GNUPGHOME'] = list.listdir
     mail = Mail.new(File.read('spec/fixtures/mails/bounce.eml'))
     mail.to = list.owner_address
@@ -121,8 +121,8 @@ describe 'someone sends an email to a listname-dash-address' do
     expect(signed_message_parts.last.mime_type).to eql('message/rfc822')
     expect(signed_message_parts.last.body.to_s).to include('Mailer-Daemon@schleuder.example.org')
     expect(signed_message_parts.last.body.to_s).to include(mail.message_id)
-    expect(signed_message_parts.last.body.to_s).to include("Subject: bounce test")
-    expect(signed_message_parts.last.body.to_s).to include("mailbox is full")
+    expect(signed_message_parts.last.body.to_s).to include('Subject: bounce test')
+    expect(signed_message_parts.last.body.to_s).to include('mailbox is full')
   end
 end
 

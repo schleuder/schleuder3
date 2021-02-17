@@ -3,10 +3,10 @@ module Schleuder
     def self.request(list, mail)
       return if ! mail.request?
 
-      list.logger.debug "Request-message"
+      list.logger.debug 'Request-message'
 
       if ! mail.was_encrypted? || ! mail.was_validly_signed?
-        list.logger.debug "Error: Message was not encrypted and validly signed"
+        list.logger.debug 'Error: Message was not encrypted and validly signed'
         return Errors::MessageUnauthenticated.new
       end
 

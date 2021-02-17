@@ -8,9 +8,9 @@ module Schleuder
       cert = Conf.api['tls_cert_file']
       fingerprint = SchleuderCertManager.generate('schleuder', key, cert)
       puts "Fingerprint of generated certificate: #{fingerprint}"
-      puts "Have this fingerprint included into the configuration-file of all clients that want to connect to your Schleuder API."
+      puts 'Have this fingerprint included into the configuration-file of all clients that want to connect to your Schleuder API.'
       if Process.euid == 0
-        puts "! Warning: this process was run as root — please make sure the above files are accessible by the user that is running `schleuder-api-daemon`."
+        puts '! Warning: this process was run as root — please make sure the above files are accessible by the user that is running `schleuder-api-daemon`.'
       end
     end
 

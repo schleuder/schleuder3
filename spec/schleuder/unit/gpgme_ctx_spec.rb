@@ -1,7 +1,7 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe GPGME::Ctx do
-  it "#keyimport" do
+  it '#keyimport' do
     list = create(:list)
     keymaterial = File.read('spec/fixtures/example_key.txt')
 
@@ -12,9 +12,9 @@ describe GPGME::Ctx do
     expect(list.gpg.keys.map(&:fingerprint)).to include('C4D60F8833789C7CAA44496FD3FFA6613AB10ECE')
   end
 
-  it "#keyimport with unusable data" do
+  it '#keyimport with unusable data' do
     list = create(:list)
-    keymaterial = "blabla"
+    keymaterial = 'blabla'
 
     expect(list.gpg.keys.map(&:fingerprint)).not_to include('C4D60F8833789C7CAA44496FD3FFA6613AB10ECE')
     expect {
@@ -23,87 +23,87 @@ describe GPGME::Ctx do
     expect(list.gpg.keys.map(&:fingerprint)).not_to include('C4D60F8833789C7CAA44496FD3FFA6613AB10ECE')
   end
 
-  it "#find_keys with prefixed fingerprint" do
+  it '#find_keys with prefixed fingerprint' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('0x59C71FB38AEE22E091C78259D06350440F759BD3')
 
     expect(keys.size).to eql(1)
   end
 
-  it "#find_keys with un-prefixed fingerprint" do
+  it '#find_keys with un-prefixed fingerprint' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('59C71FB38AEE22E091C78259D06350440F759BD3')
 
     expect(keys.size).to eql(1)
   end
 
-  it "#find_keys with bracketed email-address" do
+  it '#find_keys with bracketed email-address' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('schleuder <schleuder@example.org>')
 
     expect(keys.size).to eql(1)
   end
 
-  it "#find_keys with bracketed wrong email-address" do
+  it '#find_keys with bracketed wrong email-address' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('blabla <blabla@example.org>')
 
     expect(keys.size).to eql(0)
   end
 
-  it "#find_keys with un-bracketed email-address" do
+  it '#find_keys with un-bracketed email-address' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('schleuder@example.org')
 
     expect(keys.size).to eql(1)
   end
 
-  it "#find_keys with un-bracketed wrong email-address" do
+  it '#find_keys with un-bracketed wrong email-address' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('blabla@example.org')
 
     expect(keys.size).to eql(0)
   end
 
-  it "#find_keys with correctly marked sub-string" do
+  it '#find_keys with correctly marked sub-string' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('@schleuder')
 
     expect(keys.size).to eql(2)
   end
 
-  it "#find_keys with correctly marked narrower sub-string" do
+  it '#find_keys with correctly marked narrower sub-string' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('@schleuder@')
 
     expect(keys.size).to eql(1)
   end
 
-  it "#find_keys with un-marked sub-string" do
+  it '#find_keys with un-marked sub-string' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys('schleuder')
 
     expect(keys.size).to eql(2)
   end
 
-  it "#find_keys without argument" do
+  it '#find_keys without argument' do
     list = create(:list)
-    list.import_key(File.read("spec/fixtures/example_key.txt"))
+    list.import_key(File.read('spec/fixtures/example_key.txt'))
     keys = list.gpg.find_keys()
 
     expect(keys.size).to eql(2)
   end
 
-  it "#clean_and_classify_input with prefixed fingerprint" do
+  it '#clean_and_classify_input with prefixed fingerprint' do
     list = create(:list)
 
     kind, input = list.gpg.clean_and_classify_input('0x59C71FB38AEE22E091C78259D06350440F759BD3')
@@ -111,7 +111,7 @@ describe GPGME::Ctx do
     expect(input).to eql('0x59C71FB38AEE22E091C78259D06350440F759BD3')
   end
 
-  it "#clean_and_classify_input with un-prefixed fingerprint" do
+  it '#clean_and_classify_input with un-prefixed fingerprint' do
     list = create(:list)
 
     kind, input = list.gpg.clean_and_classify_input('59C71FB38AEE22E091C78259D06350440F759BD3')
@@ -119,7 +119,7 @@ describe GPGME::Ctx do
     expect(input).to eql('0x59C71FB38AEE22E091C78259D06350440F759BD3')
   end
 
-  it "#clean_and_classify_input with bracketed email-address" do
+  it '#clean_and_classify_input with bracketed email-address' do
     list = create(:list)
 
     kind, input = list.gpg.clean_and_classify_input('bla <bla@foo>')
@@ -127,7 +127,7 @@ describe GPGME::Ctx do
     expect(input).to eql('<bla@foo>')
   end
 
-  it "#clean_and_classify_input with un-bracketed email-address" do
+  it '#clean_and_classify_input with un-bracketed email-address' do
     list = create(:list)
 
     kind, input = list.gpg.clean_and_classify_input('bla@foo')
@@ -135,7 +135,7 @@ describe GPGME::Ctx do
     expect(input).to eql('<bla@foo>')
   end
 
-  it "#clean_and_classify_input with URL" do
+  it '#clean_and_classify_input with URL' do
     list = create(:list)
 
     kind, input = list.gpg.clean_and_classify_input('http://example.org/foo')
@@ -143,7 +143,7 @@ describe GPGME::Ctx do
     expect(input).to eql('http://example.org/foo')
   end
 
-  it "#clean_and_classify_input with some string" do
+  it '#clean_and_classify_input with some string' do
     list = create(:list)
 
     kind, input = list.gpg.clean_and_classify_input('lala')
@@ -151,7 +151,7 @@ describe GPGME::Ctx do
     expect(input).to eql('lala')
   end
 
-  it "#gpgcli returns correct data types" do
+  it '#gpgcli returns correct data types' do
     list = create(:list)
 
     err, out, exitcode = list.gpg.class.gpgcli('--list-keys')
@@ -160,8 +160,8 @@ describe GPGME::Ctx do
     expect(exitcode).to be_a(Numeric)
   end
 
-  context "#keyserver_arg" do
-    it "returns keyserver-args if a keyserver is configured" do
+  context '#keyserver_arg' do
+    it 'returns keyserver-args if a keyserver is configured' do
       list = create(:list)
 
       keyserver_args = list.gpg.send(:keyserver_arg)
@@ -169,14 +169,14 @@ describe GPGME::Ctx do
       expect(keyserver_args).to eql("--keyserver #{Conf.keyserver}")
     end
 
-    it "returns a blank string if the keyserver-option is set to a blank value" do
+    it 'returns a blank string if the keyserver-option is set to a blank value' do
       oldval = Conf.instance.config['keyserver']
       Conf.instance.config['keyserver'] = ''
       list = create(:list)
 
       keyserver_args = list.gpg.send(:keyserver_arg)
 
-      expect(keyserver_args).to eql("")
+      expect(keyserver_args).to eql('')
 
       Conf.instance.config['keyserver'] = oldval
     end
@@ -185,9 +185,9 @@ describe GPGME::Ctx do
   context '#refresh_keys' do
     it 'updates keys from the keyserver' do
       list = create(:list)
-      list.subscribe("admin@example.org", nil, true)
-      list.import_key(File.read("spec/fixtures/expired_key.txt"))
-      list.import_key(File.read("spec/fixtures/olduid_key.txt"))
+      list.subscribe('admin@example.org', nil, true)
+      list.import_key(File.read('spec/fixtures/expired_key.txt'))
+      list.import_key(File.read('spec/fixtures/olduid_key.txt'))
 
       res = ''
       with_sks_mock(list.listdir) do
@@ -199,8 +199,8 @@ describe GPGME::Ctx do
     
     it 'reports errors from refreshing keys' do
       list = create(:list)
-      list.subscribe("admin@example.org", nil, true)
-      list.import_key(File.read("spec/fixtures/expired_key.txt"))
+      list.subscribe('admin@example.org', nil, true)
+      list.import_key(File.read('spec/fixtures/expired_key.txt'))
 
       res = list.gpg.refresh_keys(list.keys)
 

@@ -18,7 +18,7 @@ module Schleuder
           mail.parts[1][:content_type].content_type == 'application/pgp-encrypted' &&
           mail.parts[2][:content_type].content_type == 'application/octet-stream'
         mail.parts.delete_at(0)
-        mail.content_type = [:multipart, :encrypted, {protocol: "application/pgp-encrypted", boundary: mail.boundary}]
+        mail.content_type = [:multipart, :encrypted, {protocol: 'application/pgp-encrypted', boundary: mail.boundary}]
       end
     end
   end

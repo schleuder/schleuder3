@@ -4,7 +4,7 @@
 # error-message.
 $VERBOSE=nil
 
-trap("INT") { exit 1 }
+trap('INT') { exit 1 }
 
 
 begin

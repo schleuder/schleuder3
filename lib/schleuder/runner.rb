@@ -4,12 +4,12 @@ module Schleuder
       error = setup_list(recipient)
       return error if error
 
-      logger.info "Parsing incoming email."
+      logger.info 'Parsing incoming email.'
 
       # is it valid utf-8?
       msg_scrubbed = false
       unless msg.valid_encoding?
-        logger.warn "Converting message due to invalid characters"
+        logger.warn 'Converting message due to invalid characters'
         detection = CharlockHolmes::EncodingDetector.detect(msg)
         begin
           msg = CharlockHolmes::Converter.convert(msg, detection[:encoding], 'UTF-8')
@@ -18,7 +18,7 @@ module Schleuder
           # so we scrub the invalid characters to be able to
           # at least parse the message somehow. Though this might
           # result in data loss.
-          logger.warn "Scrubbing message due to invalid characters"
+          logger.warn 'Scrubbing message due to invalid characters'
           msg = msg.scrub
           msg_scrubbed = true
         end
@@ -27,7 +27,7 @@ module Schleuder
       @mail = Mail.create_message_to_list(msg, recipient, list)
 
       if msg_scrubbed
-        @mail.add_pseudoheader(:note, I18n.t("pseudoheaders.scrubbed_message"))
+        @mail.add_pseudoheader(:note, I18n.t('pseudoheaders.scrubbed_message'))
       end
 
       error = run_filters('pre')
@@ -43,7 +43,7 @@ module Schleuder
              GPGME::Error::NoSecretKey,
              GPGME::Error::Canceled
 
-        logger.warn "Decryption of incoming message failed."
+        logger.warn 'Decryption of incoming message failed.'
         return Errors::DecryptionFailed.new(list)
       end
 
@@ -51,7 +51,7 @@ module Schleuder
       return error if error
 
       if ! @mail.was_validly_signed?
-        logger.debug "Message was not validly signed, adding subject_prefix_in"
+        logger.debug 'Message was not validly signed, adding subject_prefix_in'
         @mail.add_subject_prefix_in!
       end
 
@@ -65,15 +65,15 @@ module Schleuder
 
       # Don't send empty messages over the list.
       if @mail.empty?
-        logger.info "Message found empty, not sending it to list."
+        logger.info 'Message found empty, not sending it to list.'
         return Errors::MessageEmpty.new(@list)
       end
 
-      logger.debug "Adding subject_prefix"
+      logger.debug 'Adding subject_prefix'
       @mail.add_subject_prefix!
 
       # Subscriptions
-      logger.debug "Creating clean copy of message"
+      logger.debug 'Creating clean copy of message'
       copy = @mail.clean_copy(list.headers_to_meta.any?)
       list.send_to_subscriptions(copy, @mail)
       nil

@@ -1,12 +1,12 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe 'cli' do
   context '#refresh_keys' do
     it 'updates keys from the keyserver' do
       list = create(:list)
-      list.subscribe("admin@example.org", nil, true)
-      list.import_key(File.read("spec/fixtures/expired_key.txt"))
-      list.import_key(File.read("spec/fixtures/olduid_key.txt"))
+      list.subscribe('admin@example.org', nil, true)
+      list.import_key(File.read('spec/fixtures/expired_key.txt'))
+      list.import_key(File.read('spec/fixtures/olduid_key.txt'))
 
       with_sks_mock(list.listdir) do
         Cli.new.refresh_keys
@@ -26,9 +26,9 @@ describe 'cli' do
       list1 = create(:list)
       list2 = create(:list)
       [list1,list2].each do |list|
-        list.subscribe("admin@example.org", nil, true)
-        list.import_key(File.read("spec/fixtures/expired_key.txt"))
-        list.import_key(File.read("spec/fixtures/olduid_key.txt"))
+        list.subscribe('admin@example.org', nil, true)
+        list.import_key(File.read('spec/fixtures/expired_key.txt'))
+        list.import_key(File.read('spec/fixtures/olduid_key.txt'))
       end
 
       with_sks_mock(list1.listdir) do
@@ -47,15 +47,15 @@ describe 'cli' do
 
     it 'reports errors from refreshing keys' do
       list = create(:list)
-      list.subscribe("admin@example.org", nil, true)
-      list.import_key(File.read("spec/fixtures/expired_key.txt"))
+      list.subscribe('admin@example.org', nil, true)
+      list.import_key(File.read('spec/fixtures/expired_key.txt'))
 
       Cli.new.refresh_keys
       mail = Mail::TestMailer.deliveries.find { |message| message.to == [list.admins.first.email] }
 
       expect(mail.first_plaintext_part.decoded).to include("Refreshing all keys from the keyring of list #{list.email} resulted in this")
       if GPGME::Ctx.sufficient_gpg_version?('2.1')
-        expect(mail.first_plaintext_part.decoded).to include("keyserver refresh failed:")
+        expect(mail.first_plaintext_part.decoded).to include('keyserver refresh failed:')
       else
         # The wording differs slightly among versions.
         expect(mail.first_plaintext_part.decoded).to match(/gpgkeys: .* error .* connect/)
@@ -64,7 +64,7 @@ describe 'cli' do
       teardown_list_and_mailer(list)
     end
 
-    it "warns about file system permissions if it was run as root" do
+    it 'warns about file system permissions if it was run as root' do
       expect(Process).to receive(:euid).and_return(0)
       list = create(:list)
 
@@ -76,7 +76,7 @@ describe 'cli' do
 
   context '#install' do
     it 'exits if a shell-process failed' do
-      dbfile = Conf.database["database"]
+      dbfile = Conf.database['database']
       tmp_filename = "#{dbfile}.tmp"
       File.rename(dbfile, tmp_filename)
       FileUtils.touch dbfile
@@ -90,7 +90,7 @@ describe 'cli' do
       File.rename(tmp_filename, dbfile)
     end
 
-    it "warns about file system permissions if it was run as root" do
+    it 'warns about file system permissions if it was run as root' do
       expect(Process).to receive(:euid).and_return(0)
 
       expect do
@@ -108,7 +108,7 @@ describe 'cli' do
   end
 
   context '#check_keys' do
-    it "warns about file system permissions if it was run as root" do
+    it 'warns about file system permissions if it was run as root' do
       expect(Process).to receive(:euid).and_return(0)
 
       expect do

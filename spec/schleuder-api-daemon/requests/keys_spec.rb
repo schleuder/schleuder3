@@ -24,9 +24,9 @@ describe 'keys via api' do
       expect(last_response.status).to be 401
     end
     it 'does check keys with authorization' do
-      @list.import_key(File.read("spec/fixtures/revoked_key.txt"))
-      @list.import_key(File.read("spec/fixtures/signonly_key.txt"))
-      @list.import_key(File.read("spec/fixtures/expired_key.txt"))
+      @list.import_key(File.read('spec/fixtures/revoked_key.txt'))
+      @list.import_key(File.read('spec/fixtures/signonly_key.txt'))
+      @list.import_key(File.read('spec/fixtures/expired_key.txt'))
       authorize!
       get "/keys/check_keys.json?list_id=#{@list.id}"
       expect(last_response.status).to be 200
@@ -75,7 +75,7 @@ describe 'keys via api' do
 
   context 'delete' do
     before(:each) do
-      @list.import_key(File.read("spec/fixtures/bla_foo_key.txt"))
+      @list.import_key(File.read('spec/fixtures/bla_foo_key.txt'))
     end
 
     it 'doesn\'t delete keys without authentication' do
@@ -97,7 +97,7 @@ describe 'keys via api' do
   context 'a key with broken utf8 in uid' do
     context 'already imported' do
       before(:each) do
-        @list.import_key(File.read("spec/fixtures/broken_utf8_uid_key.txt"))
+        @list.import_key(File.read('spec/fixtures/broken_utf8_uid_key.txt'))
       end
       after(:each) do
         @list.delete_key('0x1242F6E13D8EBE4A')
@@ -112,7 +112,7 @@ describe 'keys via api' do
         authorize!
         get "/keys/0x1242F6E13D8EBE4A.json?list_id=#{@list.id}"
         expect(last_response.status).to be 200
-        expect(JSON.parse(last_response.body)['fingerprint']).to eq("3102B29989BEE703AE5ED62E1242F6E13D8EBE4A")
+        expect(JSON.parse(last_response.body)['fingerprint']).to eq('3102B29989BEE703AE5ED62E1242F6E13D8EBE4A')
       end
       it 'does delete key' do
         authorize!

@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 module Schleuder::Filters
   def self.dummy(list,mail)
@@ -13,7 +13,7 @@ describe Schleuder::Filters::Runner do
   let(:list) do
     # setup the list with an admin that can be notified
     list = create(:list, send_encrypted_only: false)
-    list.subscribe("schleuder@example.org", nil, true)
+    list.subscribe('schleuder@example.org', nil, true)
     list
   end
   let(:pre_filters) { Schleuder::Filters::Runner.new(list,'pre') }

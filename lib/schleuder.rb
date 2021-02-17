@@ -65,10 +65,10 @@ require 'schleuder/list_builder'
 require 'schleuder/subscription'
 
 # Setup
-ENV["SCHLEUDER_CONFIG"] ||= '/etc/schleuder/schleuder.yml'
-ENV["SCHLEUDER_LIST_DEFAULTS"] ||= '/etc/schleuder/list-defaults.yml'
-ENV["SCHLEUDER_ENV"] ||= 'production'
-ENV["SCHLEUDER_ROOT"] = rootdir.to_s
+ENV['SCHLEUDER_CONFIG'] ||= '/etc/schleuder/schleuder.yml'
+ENV['SCHLEUDER_LIST_DEFAULTS'] ||= '/etc/schleuder/list-defaults.yml'
+ENV['SCHLEUDER_ENV'] ||= 'production'
+ENV['SCHLEUDER_ROOT'] = rootdir.to_s
 
 GPGME::Ctx.set_gpg_path_from_env
 GPGME::Ctx.check_gpg_version

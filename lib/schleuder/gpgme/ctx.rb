@@ -25,10 +25,10 @@ module GPGME
           [import_status.fpr, nil]
         end
       when 0
-        [nil, "The given key material did not contain any keys!"]
+        [nil, 'The given key material did not contain any keys!']
       else
         # TODO: report import-stati of the keys?
-        [nil, "The given key material contained more than one key, could not determine which fingerprint to use. Please set it manually!"]
+        [nil, 'The given key material contained more than one key, could not determine which fingerprint to use. Please set it manually!']
       end
     end
 
@@ -156,7 +156,7 @@ module GPGME
         # restricted to keyservers.
         "#{keyserver_arg} --auto-key-locate keyserver --locate-key #{input}"
       else
-        [nil, I18n.t("fetch_key.invalid_input")]
+        [nil, I18n.t('fetch_key.invalid_input')]
       end
     end
 
@@ -180,7 +180,7 @@ module GPGME
         states = []
 
         if import_status == 0
-          states << I18n.t("import_states.unchanged")
+          states << I18n.t('import_states.unchanged')
         else
           IMPORT_FLAGS.each do |text, int|
             if (import_status & int) > 0
@@ -211,7 +211,7 @@ module GPGME
       errors = []
       output = []
       base_cmd = gpg_engine.file_name
-      base_args = "--no-greeting --no-permission-warning --quiet --armor --trust-model always --no-tty --command-fd 0 --status-fd 1"
+      base_args = '--no-greeting --no-permission-warning --quiet --armor --trust-model always --no-tty --command-fd 0 --status-fd 1'
       cmd = [base_cmd, base_args, args].flatten.join(' ')
       Open3.popen3(cmd) do |stdin, stdout, stderr, thread|
         if block_given?
@@ -238,7 +238,7 @@ module GPGME
     end
 
     def self.delete_daemon_socket(name)
-      path = File.join(ENV["GNUPGHOME"], "S.#{name}")
+      path = File.join(ENV['GNUPGHOME'], "S.#{name}")
       if File.exist?(path)
         File.delete(path)
       end
@@ -248,7 +248,7 @@ module GPGME
       if Conf.keyserver.present?
         "--keyserver #{Conf.keyserver}"
       else
-        ""
+        ''
       end
     end
 

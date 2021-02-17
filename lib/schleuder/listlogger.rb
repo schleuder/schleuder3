@@ -17,7 +17,7 @@ module Schleuder
       if logfiles_to_keep < 1
         logfiles_to_keep = list.class.column_defaults['logfiles_to_keep']
       end
-      suffix_now = Time.now.strftime("%Y%m%d").to_i
+      suffix_now = Time.now.strftime('%Y%m%d').to_i
       del_older_than = suffix_now - logfiles_to_keep
       Pathname.glob("#{list.logfile}.????????").each do |file|
         if file.basename.to_s.match(/\.([0-9]{8})$/)

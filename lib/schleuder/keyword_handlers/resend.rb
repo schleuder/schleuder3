@@ -64,7 +64,7 @@ module Schleuder
         # Only continue if all recipients are still here.
         if recip_map.size < @arguments.size
           recip_map.keys.each do |aborted_sender|
-            @mail.add_pseudoheader(:error, I18n.t("keyword_handlers.resend.aborted", email: aborted_sender))
+            @mail.add_pseudoheader(:error, I18n.t('keyword_handlers.resend.aborted', email: aborted_sender))
           end
           return
         end

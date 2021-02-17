@@ -4,7 +4,7 @@ module Schleuder
 
     validates :list_id, inclusion: {
                           in: -> (id) { List.pluck(:id) },
-                          message: "must refer to an existing list"
+                          message: 'must refer to an existing list'
                         }
     validates :email, presence: true, email: true
     validates :email, uniqueness: { scope: :list_id, case_sensitive: true }
@@ -52,7 +52,7 @@ module Schleuder
           notify_of_missed_message(:absent)
           return false
         else
-          list.logger.warn "Sending plaintext because no key is present!"
+          list.logger.warn 'Sending plaintext because no key is present!'
         end
       elsif ! self.key.usable?
         if self.list.send_encrypted_only?
@@ -87,7 +87,7 @@ module Schleuder
       if self.list.munge_from? && ! incoming_mail.nil? 
         # If the option "munge_from" is set to true, we will add the original senders' from-header to ours.
         # We munge the from-header to avoid issues with DMARC.
-        mail.from = I18n.t("header_munging", from: incoming_mail.from.first, list: self.list.email, list_address: self.list.email)
+        mail.from = I18n.t('header_munging', from: incoming_mail.from.first, list: self.list.email, list_address: self.list.email)
       else
         mail.from = self.list.email
       end
@@ -100,7 +100,7 @@ module Schleuder
       self.list.logger.warn "Not sending to #{self.email}: key is unusable because it is #{reason} and sending plain text not allowed"
       mail = ensure_headers(Mail.new)
       mail.subject = I18n.t('notice')
-      mail.body = I18n.t("missed_message_due_to_unusable_key", list_email: self.list.email) + I18n.t('errors.signoff')
+      mail.body = I18n.t('missed_message_due_to_unusable_key', list_email: self.list.email) + I18n.t('errors.signoff')
       mail.gpg self.list.gpg_sign_options
       mail.deliver
     end

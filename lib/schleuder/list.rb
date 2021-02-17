@@ -29,14 +29,14 @@ module Schleuder
         :keywords_admin_notify do |record, attrib, value|
           value.each do |word|
             if word !~ /\A[a-z_-]+\z/i
-              record.errors.add(attrib, I18n.t("errors.invalid_characters"))
+              record.errors.add(attrib, I18n.t('errors.invalid_characters'))
             end
           end
         end
     validates_each :bounces_drop_on_headers do |record, attrib, value|
           value.each do |key, val|
             if key.to_s !~ /\A[a-z-]+\z/i || val.to_s !~ /\A[[:graph:]]+\z/i
-              record.errors.add(attrib, I18n.t("errors.invalid_characters"))
+              record.errors.add(attrib, I18n.t('errors.invalid_characters'))
             end
           end
         end
@@ -340,7 +340,7 @@ module Schleuder
     end
 
     def send_to_subscriptions(mail, incoming_mail=nil)
-      logger.debug "Sending to subscriptions."
+      logger.debug 'Sending to subscriptions.'
       mail.add_internal_footer!
       self.subscriptions.each do |subscription|
         begin

@@ -5,7 +5,7 @@ module Schleuder
       end
 
       def to_s
-        t("errors.fatalerror")
+        t('errors.fatalerror')
       end
     end
   end

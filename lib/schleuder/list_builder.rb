@@ -20,7 +20,7 @@ module Schleuder
     end
 
     def run
-      Schleuder.logger.info "Building new list"
+      Schleuder.logger.info 'Building new list'
 
       if @listname.blank? || ! @listname.match(Conf::EMAIL_REGEXP)
         return [nil, {'email' => ["'#{@listname}' is not a valid email address"]}]
@@ -63,13 +63,13 @@ module Schleuder
 
     def gpg
       @gpg_ctx ||= begin
-        ENV["GNUPGHOME"] = @list_dir
+        ENV['GNUPGHOME'] = @list_dir
         GPGME::Ctx.new
       end
     end
 
     def create_key(list)
-      Schleuder.logger.info "Generating key-pair, this could take a while..."
+      Schleuder.logger.info 'Generating key-pair, this could take a while...'
       gpg.generate_key(key_params(list))
 
       # Get key without knowing the fingerprint yet.

@@ -34,7 +34,7 @@ module Schleuder
 
       def bounce?(response, mail)
         if list.bounces_drop_all
-          list.logger.debug "Dropping bounce as configurated"
+          list.logger.debug 'Dropping bounce as configurated'
           notify_admins(I18n.t('.bounces_drop_all'), mail.original_message)
           return false
         end
@@ -47,7 +47,7 @@ module Schleuder
           end
         end
 
-        list.logger.debug "Bouncing message"
+        list.logger.debug 'Bouncing message'
         true
       end
 
@@ -83,7 +83,7 @@ module Schleuder
       end
 
       def filter_dirs
-        @filter_dirs ||= [File.join(File.dirname(__FILE__),"filters"),
+        @filter_dirs ||= [File.join(File.dirname(__FILE__),'filters'),
                           Schleuder::Conf.filters_dir].map do |d|
                             File.join(d,"#{filter_type}_decryption/[0-9]*_*.rb")
                           end

@@ -1,6 +1,6 @@
-require "spec_helper"
+require 'spec_helper'
 
-describe "user sends an encrypted message" do
+describe 'user sends an encrypted message' do
   [
     'encrypted-inline',
     'encrypted-mime',
@@ -10,7 +10,7 @@ describe "user sends an encrypted message" do
     it "from thunderbird being #{t}" do
       start_smtp_daemon
       list = create(:list)
-      list.subscribe("admin@example.org", nil, true)
+      list.subscribe('admin@example.org', nil, true)
       message_path = "spec/fixtures/mails/#{t}/thunderbird.eml"
 
       error = run_schleuder(:work, list.email, message_path)

@@ -7,7 +7,7 @@
 require 'socket'
 require 'open3'
 
-trap ("INT") { exit 0 }
+trap ('INT') { exit 0 }
 
 def usage
   puts "Usage: #{File.basename(__FILE__)} portnum output-directory"
@@ -34,33 +34,33 @@ end
 
 begin
   # run the server
-  server = TCPServer.new("localhost", port)
+  server = TCPServer.new('localhost', port)
 
   # receive input
   while (connection = server.accept)
     input = ''
     recipient = ''
-    connection.puts "220 localhost SMTP"
+    connection.puts '220 localhost SMTP'
     begin
       while line = connection.gets
         line.chomp!
         case line[0..3].downcase
         when 'ehlo', 'helo'
-          connection.puts "250 localhost"
+          connection.puts '250 localhost'
         when 'mail', 'rset'
-          connection.puts "250 ok"
+          connection.puts '250 ok'
         when 'rcpt'
           recipient = line.split(':').last.gsub(/[<>\s]*/, '')
-          connection.puts "250 ok"
+          connection.puts '250 ok'
         when 'data'
-          connection.puts "354 go ahead"
+          connection.puts '354 go ahead'
         when 'quit'
-          connection.puts "221 localhost"
+          connection.puts '221 localhost'
         when '.'
           filename = File.join(outputdir, "mail-#{Time.now.to_f}")
           # puts "New message to #{recipient} written to #{filename}"
           IO.write(filename, input)
-          connection.puts "250 ok"
+          connection.puts '250 ok'
         else
           input << line + "\n"
         end

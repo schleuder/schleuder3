@@ -24,7 +24,7 @@ describe 'lists via api' do
 
   it 'correctly finds a list by email-address that starts with a number' do
     authorize!
-    list = create(:list, email: "9list@hostname")
+    list = create(:list, email: '9list@hostname')
     get "lists/#{list.email}.json"
     expect(last_response.status).to be 200
     expect(JSON.parse(last_response.body)['email']).to eq list.email

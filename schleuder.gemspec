@@ -4,12 +4,12 @@ $: << File.expand_path('../lib', __FILE__)
 require 'schleuder/version'
 
 Gem::Specification.new do |s|
-  s.name         = "schleuder"
+  s.name         = 'schleuder'
   s.version      = Schleuder::VERSION
   s.authors      = 'schleuder dev team'
-  s.email        = "team@schleuder.org"
-  s.homepage     = "https://schleuder.org/"
-  s.summary      = "Schleuder is an encrypting mailing list manager with remailing-capabilities."
+  s.email        = 'team@schleuder.org'
+  s.homepage     = 'https://schleuder.org/'
+  s.summary      = 'Schleuder is an encrypting mailing list manager with remailing-capabilities.'
   s.description  = "Schleuder is a group's email-gateway: subscribers can exchange encrypted emails among themselves, receive emails from non-subscribers and send emails to non-subscribers via the list.\n\n(Please note: For some platforms there's a better way of installing Schleuder than `gem install`. See <https://schleuder.org/schleuder/docs/server-admins.html#installation> for details.)"
   s.files        = `git ls-files lib locales etc db README.md Rakefile`.split
   s.executables =  %w[schleuder schleuder-api-daemon]
@@ -17,14 +17,14 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.license = 'GPL-3.0'
   s.metadata = {
-    "homepage_uri"      => "https://schleuder.org/",
-    "documentation_uri" => "https://schleuder.org/docs/",
-    "changelog_uri"     => "https://0xacab.org/schleuder/schleuder/blob/master/CHANGELOG.md",
-    "source_code_uri"   => "https://0xacab.org/schleuder/schleuder/",
-    "bug_tracker_uri"   => "https://0xacab.org/schleuder/schleuder/issues",
-    "mailing_list_uri"  => "https://lists.nadir.org/mailman/listinfo/schleuder-announce/",
+    'homepage_uri'      => 'https://schleuder.org/',
+    'documentation_uri' => 'https://schleuder.org/docs/',
+    'changelog_uri'     => 'https://0xacab.org/schleuder/schleuder/blob/master/CHANGELOG.md',
+    'source_code_uri'   => 'https://0xacab.org/schleuder/schleuder/',
+    'bug_tracker_uri'   => 'https://0xacab.org/schleuder/schleuder/issues',
+    'mailing_list_uri'  => 'https://lists.nadir.org/mailman/listinfo/schleuder-announce/',
   }
-  s.required_ruby_version = ">= 2.5.0"
+  s.required_ruby_version = '>= 2.5.0'
   # Explicitly depend on BigDecimal 1.4, because later versions are
   # incompatible with activesupport 4.2, which is a dependency of activerecord 4.2.
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')

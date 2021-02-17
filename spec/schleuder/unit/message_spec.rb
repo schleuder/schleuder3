@@ -1,9 +1,9 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Mail::Message do
   it "doesn't change the order of mime-parts" do
     text_part = Mail::Part.new
-    text_part.body = "This is text"
+    text_part.body = 'This is text'
     image_part = Mail::Part.new
     image_part.content_type = 'image/png'
     image_part.content_disposition = 'attachment; filename=spec.png'
@@ -21,7 +21,7 @@ describe Mail::Message do
   # TODO: test message with "null" address ("<>") as Return-Path. I couldn't
   # bring Mail to generate such a message, yet.
   
-  it "recognizes a message sent to listname-bounce@hostname as automated message" do
+  it 'recognizes a message sent to listname-bounce@hostname as automated message' do
     list = create(:list)
     mail = Mail.new
     # Trigger the setting of mandatory headers.
@@ -31,10 +31,10 @@ describe Mail::Message do
     expect(mail.automated_message?).to be(true)
   end
 
-  it "recognizes bounce message subject using the bounce_email gem" do
+  it 'recognizes bounce message subject using the bounce_email gem' do
     list = create(:list)
     mail = Mail.new
-    mail.subject = "Undelivered Mail Returned to Sender"
+    mail.subject = 'Undelivered Mail Returned to Sender'
     mail = Mail.create_message_to_list(mail.to_s, 'something@localhost', list).setup
 
     expect(mail.automated_message?).to be(true)
@@ -144,7 +144,7 @@ describe Mail::Message do
     end
   end
 
-  it "adds list#public_footer as last mime-part without changing its value" do
+  it 'adds list#public_footer as last mime-part without changing its value' do
     footer = "\n\n-- \nblabla\n  blabla\n  "
     list = create(:list)
     list.public_footer = footer
@@ -156,7 +156,7 @@ describe Mail::Message do
     expect(mail.parts.last.body.to_s).to eql(footer)
   end
 
-  it "adds list#internal_footer as last mime-part without changing its value" do
+  it 'adds list#internal_footer as last mime-part without changing its value' do
     footer = "\n\n-- \nblabla\n  blabla\n  "
     list = create(:list)
     list.internal_footer = footer
@@ -168,57 +168,57 @@ describe Mail::Message do
     expect(mail.parts.last.body.to_s).to eql(footer)
   end
 
-  context "makes a pseudo header" do
-    it "with key / value" do
+  context 'makes a pseudo header' do
+    it 'with key / value' do
       mail = Mail.new
       ph = mail.make_pseudoheader('notice','some value')
       expect(ph).to eql('Notice: some value')
     end
 
-    it "without value" do
+    it 'without value' do
       mail = Mail.new
       ph = mail.make_pseudoheader(:key,nil)
       expect(ph).to eql('Key: ')
     end
 
-    it "with empty value" do
+    it 'with empty value' do
       mail = Mail.new
       ph = mail.make_pseudoheader(:key,'')
       expect(ph).to eql('Key: ')
     end
 
-    it "that is getting wrapped" do
+    it 'that is getting wrapped' do
       mail = Mail.new
       ph = mail.make_pseudoheader('notice','adds list#public_footer as last mime-part without changing its value adds list#public_footer as last mime-part without changing its value')
       expect(ph).to eql("Notice: adds list#public_footer as last mime-part without changing its value\n  adds list#public_footer as last mime-part without changing its value")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
 
-    it "that multiline are getting wrapped" do
+    it 'that multiline are getting wrapped' do
       mail = Mail.new
       ph = mail.make_pseudoheader('notice',"adds list#public_footer as last mime-part\nwithout changing its value adds list#public_footer as last mime-part without changing its value")
       expect(ph).to eql("Notice: adds list#public_footer as last mime-part\n  without changing its value adds list#public_footer as last mime-part without\n  changing its value")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
-    it "that single multiline are getting indented" do
+    it 'that single multiline are getting indented' do
       mail = Mail.new
       ph = mail.make_pseudoheader('notice',"on line 1\non line 2 but indented")
       expect(ph).to eql("Notice: on line 1\n  on line 2 but indented")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
-    it "that a line with less than 76 gets wrapped" do
+    it 'that a line with less than 76 gets wrapped' do
       mail = Mail.new
       ph = mail.make_pseudoheader('keylongerthan8', 'afafa afafaf' * 6) # message is 72 long
       expect(ph).to eql("Keylongerthan8: afafa afafafafafa afafafafafa afafafafafa afafafafafa\n  afafafafafa afafaf")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
-    it "that a multiline with less than 76 get wrapped correctly on the first line" do
+    it 'that a multiline with less than 76 get wrapped correctly on the first line' do
       mail = Mail.new
       ph = mail.make_pseudoheader('keylongerthan8', ('afafa afafaf' * 6)+"\nbla bla newline")
       expect(ph).to eql("Keylongerthan8: afafa afafafafafa afafafafafa afafafafafa afafafafafa\n  afafafafafa afafaf\n  bla bla newline")
       expect(ph.split("\n")).to all( satisfy{|l| l.length <= 78 })
     end
-    it "that a multiline with less than 76 get wrapped correctly on the first line and the following lines" do
+    it 'that a multiline with less than 76 get wrapped correctly on the first line and the following lines' do
       mail = Mail.new
       ph = mail.make_pseudoheader('keylongerthan8', ('afafa afafaf' * 6)+"\nbla bla newline"+('afafa afafaf' * 6))
       expect(ph).to eql("Keylongerthan8: afafa afafafafafa afafafafafa afafafafafa afafafafafa\n  afafafafafa afafaf\n  bla bla newlineafafa afafafafafa afafafafafa afafafafafa afafafafafa\n  afafafafafa afafaf")

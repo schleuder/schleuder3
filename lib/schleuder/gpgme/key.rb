@@ -41,7 +41,7 @@ module GPGME
               attribs << "[expired: #{expires.strftime(datefmt)}]"
             when :revoked
               # TODO: add revocation date when it's available.
-              attribs << "[revoked]"
+              attribs << '[revoked]'
             else
               attribs << "[#{usability_issue}]"
             end
@@ -75,7 +75,7 @@ module GPGME
       if trust.present?
         trust
       elsif ! usable_for?(:encrypt)
-        "not capable of encryption"
+        'not capable of encryption'
       else
         nil
       end

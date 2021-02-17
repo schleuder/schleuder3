@@ -57,7 +57,7 @@ module Mail
       end
 
       # Delete the protected headers which might leak information.
-      if new.parts.first && new.parts.first.content_type == "text/rfc822-headers; protected-headers=v1"
+      if new.parts.first && new.parts.first.content_type == 'text/rfc822-headers; protected-headers=v1'
         new.parts.shift
       end
 
@@ -84,7 +84,7 @@ module Mail
 
       if self.protected_headers_subject.present?
         new_part = Mail::Part.new
-        new_part.content_type = "text/rfc822-headers; protected-headers=v1"
+        new_part.content_type = 'text/rfc822-headers; protected-headers=v1'
         new_part.body = "Subject: #{self.subject}\n"
         clean.add_part new_part
       end
@@ -143,7 +143,7 @@ module Mail
       when 1
         signatures.first
       else
-        raise "Multiple signatures found! Cannot handle!"
+        raise 'Multiple signatures found! Cannot handle!'
       end
     end
 
@@ -213,7 +213,7 @@ module Mail
     end
 
     def bounced?
-      @bounced ||= bounce_detected? || (error_status != "unknown")
+      @bounced ||= bounce_detected? || (error_status != 'unknown')
     end
 
     def error_status
@@ -280,19 +280,19 @@ module Mail
         if signing_key.present?
           signature_state = signature.to_s
         else
-          signature_state = I18n.t("signature_states.unknown", fingerprint: self.signature.fingerprint)
+          signature_state = I18n.t('signature_states.unknown', fingerprint: self.signature.fingerprint)
         end
       else
-        signature_state = I18n.t("signature_states.unsigned")
+        signature_state = I18n.t('signature_states.unsigned')
       end
       signature_state
     end
 
     def encryption_state
       if was_encrypted?
-        encryption_state = I18n.t("encryption_states.encrypted")
+        encryption_state = I18n.t('encryption_states.encrypted')
       else
-        encryption_state = I18n.t("encryption_states.unencrypted")
+        encryption_state = I18n.t('encryption_states.unencrypted')
       end
       encryption_state
     end
@@ -348,7 +348,7 @@ module Mail
         self['List-Help'] = '<https://schleuder.org/>'
 
         postmsg = if list.receive_admin_only
-                    "NO (Admins only)"
+                    'NO (Admins only)'
                   elsif list.receive_authenticated_only
                     "<mailto:#{list.email}> (Subscribers only)"
                   else
@@ -502,7 +502,7 @@ module Mail
     end
 
     def _add_subject_prefix(suffix)
-      attrib = "subject_prefix"
+      attrib = 'subject_prefix'
       if suffix
         attrib << "_#{suffix}"
       end
@@ -592,34 +592,34 @@ module Mail
     def detect_bounce_status_code_from_text(text)
       # Parses a text and uses pattern matching to determines its error status (RFC 3463)
       # from: https://github.com/mailtop/bounce_email
-      return "5.0.0" if text.match(/Status: 5\.0\.0/i)
-      return "5.1.1" if text.match(/no such (address|user)|Recipient address rejected|User unknown|does not like recipient|The recipient was unavailable to take delivery of the message|Sorry, no mailbox here by that name|invalid address|unknown user|unknown local part|user not found|invalid recipient|failed after I sent the message|did not reach the following recipient|nicht zugestellt werden|o pode ser entregue para um ou mais/i)
-      return "5.1.2" if text.match(/unrouteable mail domain|Esta casilla ha expirado por falta de uso|I couldn't find any host named/i)
+      return '5.0.0' if text.match(/Status: 5\.0\.0/i)
+      return '5.1.1' if text.match(/no such (address|user)|Recipient address rejected|User unknown|does not like recipient|The recipient was unavailable to take delivery of the message|Sorry, no mailbox here by that name|invalid address|unknown user|unknown local part|user not found|invalid recipient|failed after I sent the message|did not reach the following recipient|nicht zugestellt werden|o pode ser entregue para um ou mais/i)
+      return '5.1.2' if text.match(/unrouteable mail domain|Esta casilla ha expirado por falta de uso|I couldn't find any host named/i)
       if text.match(/mailbox is full|Mailbox quota (usage|disk) exceeded|quota exceeded|Over quota|User mailbox exceeds allowed size|Message rejected\. Not enough storage space|user has exhausted allowed storage space|too many messages on the server|mailbox is over quota|mailbox exceeds allowed size|excedeu a quota/i)
-        return "5.2.2" if text.match(/This is a permanent error||(Status: |)5\.2\.2/i)
-        return "4.2.2"
+        return '5.2.2' if text.match(/This is a permanent error||(Status: |)5\.2\.2/i)
+        return '4.2.2'
       end
-      return "5.1.0" if text.match(/Address rejected/)
-      return "4.1.2" if text.match(/I couldn't find any host by that name/)
-      return "4.2.0" if text.match(/not yet been delivered/i)
-      return "5.1.1" if text.match(/mailbox unavailable|No such mailbox|RecipientNotFound|not found by SMTP address lookup|Status: 5\.1\.1/i)
-      return "5.2.3" if text.match(/Status: 5\.2\.3/i) # Too messages in folder
-      return "5.4.0" if text.match(/Status: 5\.4\.0/i) # too many hops
-      return "5.4.4" if text.match(/Unrouteable address/i)
-      return "4.4.7" if text.match(/retry timeout exceeded/i)
-      return "5.2.0" if text.match(/The account or domain may not exist, they may be blacklisted, or missing the proper dns entries./i)
-      return "5.5.4" if text.match(/554 TRANSACTION FAILED/i)
-      return "4.4.1" if text.match(/Status: 4.4.1|delivery temporarily suspended|wasn't able to establish an SMTP connection/i)
-      return "5.5.0" if text.match(/550 OU\-002|Mail rejected by Windows Live Hotmail for policy reasons/i)
-      return "5.1.2" if text.match(/PERM_FAILURE: DNS Error: Domain name not found/i)
-      return "4.2.0" if text.match(/Delivery attempts will continue to be made for/i)
-      return "5.5.4" if text.match(/554 delivery error:/i)
-      return "5.1.1" if text.match(/550-5.1.1|This Gmail user does not exist/i)
-      return "5.7.1" if text.match(/5.7.1 Your message.*?was blocked by ROTA DNSBL/i) # AA added
-      return "5.7.2" if text.match(/not have permission to post messages to the group/i)
-      return "5.3.2" if text.match(/Technical details of permanent failure|Too many bad recipients/i) && (text.match(/The recipient server did not accept our requests to connect/i) || text.match(/Connection was dropped by remote host/i) || text.match(/Could not initiate SMTP conversation/i)) # AA added
-      return "4.3.2" if text.match(/Technical details of temporary failure/i) && (text.match(/The recipient server did not accept our requests to connect/i) || text.match(/Connection was dropped by remote host/i) || text.match(/Could not initiate SMTP conversation/i)) # AA added
-      return "5.0.0" if text.match(/Delivery to the following recipient failed permanently/i) # AA added
+      return '5.1.0' if text.match(/Address rejected/)
+      return '4.1.2' if text.match(/I couldn't find any host by that name/)
+      return '4.2.0' if text.match(/not yet been delivered/i)
+      return '5.1.1' if text.match(/mailbox unavailable|No such mailbox|RecipientNotFound|not found by SMTP address lookup|Status: 5\.1\.1/i)
+      return '5.2.3' if text.match(/Status: 5\.2\.3/i) # Too messages in folder
+      return '5.4.0' if text.match(/Status: 5\.4\.0/i) # too many hops
+      return '5.4.4' if text.match(/Unrouteable address/i)
+      return '4.4.7' if text.match(/retry timeout exceeded/i)
+      return '5.2.0' if text.match(/The account or domain may not exist, they may be blacklisted, or missing the proper dns entries./i)
+      return '5.5.4' if text.match(/554 TRANSACTION FAILED/i)
+      return '4.4.1' if text.match(/Status: 4.4.1|delivery temporarily suspended|wasn't able to establish an SMTP connection/i)
+      return '5.5.0' if text.match(/550 OU\-002|Mail rejected by Windows Live Hotmail for policy reasons/i)
+      return '5.1.2' if text.match(/PERM_FAILURE: DNS Error: Domain name not found/i)
+      return '4.2.0' if text.match(/Delivery attempts will continue to be made for/i)
+      return '5.5.4' if text.match(/554 delivery error:/i)
+      return '5.1.1' if text.match(/550-5.1.1|This Gmail user does not exist/i)
+      return '5.7.1' if text.match(/5.7.1 Your message.*?was blocked by ROTA DNSBL/i) # AA added
+      return '5.7.2' if text.match(/not have permission to post messages to the group/i)
+      return '5.3.2' if text.match(/Technical details of permanent failure|Too many bad recipients/i) && (text.match(/The recipient server did not accept our requests to connect/i) || text.match(/Connection was dropped by remote host/i) || text.match(/Could not initiate SMTP conversation/i)) # AA added
+      return '4.3.2' if text.match(/Technical details of temporary failure/i) && (text.match(/The recipient server did not accept our requests to connect/i) || text.match(/Connection was dropped by remote host/i) || text.match(/Could not initiate SMTP conversation/i)) # AA added
+      return '5.0.0' if text.match(/Delivery to the following recipient failed permanently/i) # AA added
       return '5.2.3' if text.match(/account closed|account has been disabled or discontinued|mailbox not found|prohibited by administrator|access denied|account does not exist/i)
     end
   end

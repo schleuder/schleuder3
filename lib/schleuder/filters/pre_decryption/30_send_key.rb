@@ -3,7 +3,7 @@ module Schleuder
     def self.send_key(list, mail)
       return if ! mail.sendkey_request?
 
-      list.logger.debug "Sending public key as reply."
+      list.logger.debug 'Sending public key as reply.'
 
       out = mail.reply
       out.from = list.email

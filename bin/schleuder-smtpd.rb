@@ -7,7 +7,7 @@
 require 'socket'
 require 'open3'
 
-trap ("INT") { exit 0 }
+trap ('INT') { exit 0 }
 
 def usage
   puts "Usage: #{File.basename(__FILE__)} [-p portnum]"
@@ -30,28 +30,28 @@ schleuderbin = File.join(File.dirname(__FILE__), 'schleuder')
 
 begin
   # run the server
-  server = TCPServer.new("127.0.0.1", port)
+  server = TCPServer.new('127.0.0.1', port)
 
   # receive input
   while (connection = server.accept)
     input = ''
     recipient = ''
-    connection.puts "220 localhost SMTP"
+    connection.puts '220 localhost SMTP'
     begin
       while line = connection.gets
         line.chomp!
         case line[0..3].downcase
         when 'ehlo', 'helo'
-          connection.puts "250 localhost"
+          connection.puts '250 localhost'
         when 'mail', 'rset'
-          connection.puts "250 ok"
+          connection.puts '250 ok'
         when 'rcpt'
           recipient = line.split(':').last.gsub(/[<>\s]*/, '')
-          connection.puts "250 ok"
+          connection.puts '250 ok'
         when 'data'
-          connection.puts "354 go ahead"
+          connection.puts '354 go ahead'
         when 'quit'
-          connection.puts "221 localhost"
+          connection.puts '221 localhost'
         when '.'
           puts "New message to #{recipient}"
           err, status = Open3.capture2e("#{schleuderbin} work #{recipient}", {stdin_data: input})
@@ -59,7 +59,7 @@ begin
             puts "Error from schleuder: #{err}."
             connection.puts "550 #{err}"
           else
-            connection.puts "250 ok"
+            connection.puts '250 ok'
           end
         else
           input << line + "\n"
