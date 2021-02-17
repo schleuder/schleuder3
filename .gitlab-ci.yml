@@ -1,73 +1,45 @@
 ---
 stages:
-  - static
   - test
-  - debian:build
-  - debian:qa
-
-cache:
-  paths:
-    - vendor
+  - static
 
 variables:
-  GIT_STRATEGY: fetch
-  GIT_DEPTH: "10"
+  IMAGE_REGISTRY: $CI_REGISTRY/schleuder/schleuder-ci-images
 
 # Jobs that start with a period are disabled
 # This is just a template, to be used further below in the individual job definitions
-.install_build_depends: &install_build_depends |
-  # Get all required build dependencies.
-  export APT_BUILD_DEPENDS=`perl -ne 'next if /^#/; $p=(s/^Build-Depends:\s*/ / or (/^ / and $p)); s/,|\n|\([^)]+\)//mg; print if $p' < debian/control`
-  # Install the required build dependencies.
-  apt-get install -qq -y $APT_BUILD_DEPENDS
-  # Check if we're good to go regarding the build dependencies.
-  dpkg-checkbuilddeps
-
-.setup_apt: &setup_apt
-  before_script:
-    # Export APT env vars to cache packages archives and lists based on the current working directory
-    - export APT_DIR=$CI_PROJECT_DIR/vendor/apt && export APT_ARCHIVES_DIR=$APT_DIR/archives && export APT_LISTS_DIR=$APT_DIR/lists
-    # Configure APT: Only install necessary packages, set cache location
-    - printf
-      "apt::install-recommends 0;\n
-      apt::install-suggests 0;\n
-      dir::cache::archives ${APT_ARCHIVES_DIR};\n
-      dir::state::lists ${APT_LISTS_DIR};\n"
-      >> /etc/apt/apt.conf.d/99custom
-    # Ensure the custom APT directory does exist
-    - mkdir -p {${APT_ARCHIVES_DIR},${APT_LISTS_DIR}}/partial
-    # Remove jessie-updates repo which doesn't exist anymore
-    - sed -i -e '/jessie-updates/s/^#*/#/' /etc/apt/sources.list
-    - apt-get update -qq
-    # To keep things DRY, use an env var to handle packages to be installed via APT
-    - apt-get install -qq -y $APT_INSTALL_PACKAGES
-
-.setup_entropy: &setup_entropy
-  before_script:
-    # Link /dev/random to /dev/urandom do deal with limited entropy, which otherwise blocks the test suite.
-    - rm /dev/random && ln -s /dev/urandom /dev/random
-
-.setup_prerequisites: &setup_prerequisites
-  <<: [*setup_apt,*setup_entropy]
-
+.limit_non_release_branches: &limit_non_release_branches
+  except:
+    - /^master/
+    - /^release.*/
+    - tags 
+  
 .test_ruby: &test_ruby
-  variables:
-    APT_INSTALL_PACKAGES: gnupg2 libgpgme11-dev libsqlite3-dev eatmydata libicu-dev
-    # Use quotes so the following does get recognized as a string, not as a bool
-    CHECK_CODE_COVERAGE: "true"
-  <<: *setup_prerequisites
   script:
-    - bundler_args="$(ruby -e 'puts %{-v 1.17.3} if RUBY_VERSION[2].to_i < 3')"
-    - eatmydata gem install bundler --no-document $bundler_args
-    - eatmydata bundle install --jobs $(nproc) --path vendor
+    - eatmydata bundle install --jobs $(nproc)
     - SCHLEUDER_ENV=test SCHLEUDER_CONFIG=spec/schleuder.yml eatmydata bundle exec rake db:init
-    - eatmydata bundle exec rspec
+    - CHECK_CODE_COVERAGE=true eatmydata bundle exec rspec
 
+ruby:2.5:
+  image: $IMAGE_REGISTRY:schleuder-ruby2.5
+  <<: *test_ruby
+ruby:2.6:
+  image: $IMAGE_REGISTRY:schleuder-ruby2.6
+  <<: *test_ruby
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - coverage
+ruby:2.7:
+  image: $IMAGE_REGISTRY:schleuder-ruby2.7
+  <<: *test_ruby
+  
+ruby:3.0:
+  image: $IMAGE_REGISTRY:schleuder-ruby3.0
+  <<: *test_ruby
+  
 changelog:
-  image: debian:unstable
-  variables:
-    APT_INSTALL_PACKAGES: ca-certificates git ruby
-  <<: *setup_prerequisites
+  image: $IMAGE_REGISTRY:debian-generic
   script:
     - source <(./utils/ci/get-target-branch.rb)
     # Ensure we work with the latest state
@@ -80,32 +52,82 @@ changelog:
       fi
   stage: static
   allow_failure: true
-  except:
-    refs:
-      - master
-      - tags
+  <<: *limit_non_release_branches
 
 codespell:
-  image: debian:unstable
-  variables:
-    APT_INSTALL_PACKAGES: codespell
-  <<: *setup_prerequisites
+  image: $IMAGE_REGISTRY:debian-generic
   script:
-    # Run codespell to check for spelling errors, using a config with ignored words, skipping files 
-    # (German translations, v2 list configs and code of installed dependencies) leading to false positives,
-    # ignoring warnings about binary files and, finally, checking file names as well.
-    - codespell -I utils/ci/codespell/ignored_words.txt -S de.yml,list.conf,vendor,.git,*.eml -q 2 -f
+    # Run codespell to check for spelling errors, using a config with ignored
+    # words, skipping files (German translations) and the code coverage dir
+    # leading to false positives, ignoring warnings about binary files and,
+    # finally, checking file names as well.
+    - codespell -I utils/ci/codespell/ignored_words.txt -S ./.git,coverage,de.yml,fixtures -q 2 -f
   stage: static
+  <<: *limit_non_release_branches
 
-ruby:2.5:
-  image: ruby:2.5
-  <<: *test_ruby
-ruby:2.6:
-  image: ruby:2.6
-  <<: *test_ruby
-ruby:2.7:
-  image: ruby:2.7
-  <<: *test_ruby
+code-coverage:
+  image: $IMAGE_REGISTRY:debian-generic 
+  script:
+    - unset HISTFILE
+    - eval $(ssh-agent -s)
+    - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - printf "
+      |1|ZfxGVbfwfCHlaURlet/V6y+2gjg=|/X7OweXQUnXZnGSKkvF/IpVz4n4= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPJx38PfGvaHtkSsHptiHoIQxlI3Yf0cskPNTwAQnY14\n
+      |1|8YPsezXF2SYQ7rq9U5TbDnMsVjo=|SJOodZB+8j+dO+l6YTdZ7+44XLw= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPJx38PfGvaHtkSsHptiHoIQxlI3Yf0cskPNTwAQnY14
+      " > ~/.ssh/known_hosts
+    # Unfortunately, variable expansion doesn't work completely in
+    # GitLab. Therefore, a bit code duplication in the following code.
+    - DEPLOY_SLUG=www/$DEPLOY_BASE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG
+    - export DEPLOY_SLUG
+    - lftp -e "mkdir -fp $DEPLOY_SLUG; quit" -u $DEPLOY_USER,dummy sftp://$DEPLOY_HOST || /bin/true
+    - lftp -e "mirror -eRv -x ^download/ coverage $DEPLOY_SLUG; quit;" -u $DEPLOY_USER,dummy sftp://$DEPLOY_HOST
+  environment:
+    name: $DEPLOY_BASE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG
+    url: https://schleuder.org/$DEPLOY_BASE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG
+  only:
+    - branches@schleuder/schleuder
+  variables:
+    DEPLOY_BASE: dev/code-coverage
+    GIT_STRATEGY: none
+  allow_failure: true
+  stage: static
+  <<: *limit_non_release_branches
+
+rubocop:
+  image: $IMAGE_REGISTRY:debian-generic
+  script:
+    - rubocop
+  stage: static
+  <<: *limit_non_release_branches
+
+spec-filenames:
+  image: $IMAGE_REGISTRY:debian-generic
+  script:
+    - cd spec/
+    - if [[ -n $(find schleuder schleuder-api-daemon -type f -not -name '*_spec.rb') ]]; then
+        echo "spec file(s) found missing trailing '_spec' part, please verify manually";
+        exit 1;
+      fi
+  stage: static
+  allow_failure: true
+  only:
+    changes:
+      - spec/schleuder/**/*
+      - spec/schleuder-api-daemon/**/*
+  <<: *limit_non_release_branches
+
+schema-up-to-date:
+  image: $IMAGE_REGISTRY:debian-generic
+  script:
+    - ruby utils/ci/rails_schema_up_to_date.rb
+  stage: static
+  allow_failure: true
+  only:
+    changes:
+      - db/*
+  <<: *limit_non_release_branches
 
 bundler:audit:
   image: ruby:2.5
@@ -115,98 +137,4 @@ bundler:audit:
     - gem install bundler-audit --no-document
     - bundle install --jobs $(nproc) --path vendor
     - bundle-audit update
-    - bundle-audit check --ignore CVE-2020-8161 CVE-2020-8165 CVE-2020-8184
-
-debian:build:
-  stage: debian:build
-  variables:
-    APT_INSTALL_PACKAGES: build-essential ca-certificates dpkg-dev fakeroot git git-buildpackage
-  <<: *setup_prerequisites
-  script:
-    # Ensure we work with the latest state pushed to the git repository.
-    - git fetch --all --quiet
-    # Setting the git user email is needed, otherwise, merging fails.
-    - git config user.email team@schleuder.org
-    # We're keeping the current Debian packaging state in a separate branch. Therefore, we need to pull in this.
-    - git merge --allow-unrelated-histories --no-edit --quiet origin/debian/unstable
-    - *install_build_depends
-    # Get the latest upstream version from the Debian changelog. This is needed to ensure the tarball we'll create
-    # is found by gbp, the tool we're using to build the Debian package.
-    - export UPSTREAM_VERSION=`dpkg-parsechangelog --show-field Version | cut -d- -f1`
-    # We're relying on .gitattribute to exclude files and directories if creating the upstream release tarball
-    # via git archive.
-    # While this makes sense normally, doing so here leads to dpkg-source (which is called from gbp) being unhappy,
-    # due to "local changes detected, the modified files are ..." as there are some files, which don't exist in the
-    # tarball, but which do exist in our current working directory. Therefore, create the tarball manually (which
-    # ignores the existing .gitattributes file), to ensure it contains all (without the .git/ directory) content of
-    # the current working directory.
-    # Besides this, we're caching APT packages within vendor/. Currently, GitLab CI is only able to cache stuff within
-    # the working directory. However, again in this case, this leads to the same error as described above. Therefore,
-    # move the vendor/ directory temporarily out of the way. We'll move it back after the build was done, further below.
-    - mv vendor/ /tmp
-    - tar --exclude='./.git' -czf /tmp/schleuder_$UPSTREAM_VERSION.orig.tar.gz .
-    # Normally, we're checking the signature of the upstream release, to ensure the code we're pulling into Debian
-    # wasn't tampered with along the way. However, as we're creating the tarball on our own, there is no signature.
-    # During the check for packaging errors later on via lintian this would lead to a warning. Therefore, create a
-    # "dummy" signature file.
-    - touch /tmp/schleuder_$UPSTREAM_VERSION.orig.tar.gz.asc
-    # TODO: Use sbuild to be closer to the common Debian package build environment. This needs chroot creation upfront,
-    # though. Creating the chroot needs a mounted /proc filesystem. This works if running a privileged container,
-    # however, in our case it fails due to "mount(2) system call failed: Too many levels of symbolic links".
-    # I'm not sure why is that, currently, or how to solve it.
-    - gbp buildpackage --git-ignore-branch --git-ignore-new --git-tarball-dir=/tmp --git-upstream-branch="$CI_COMMIT_REF_NAME" --git-upstream-tree=BRANCH -us -uc --lintian-opts --no-lintian
-    # Move the vendor/ directory back into the current working directory to ensure it gets cached.
-    - mv /tmp/vendor .
-    # Store and upload the artifacts to make them available for the subsequent jobs.
-    - mkdir results
-    - cp ../{*.buildinfo,*.changes,*.deb,*.dsc,*.xz} /tmp/schleuder_* results/
-  allow_failure: true
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - results/
-
-debian:autopkgtest:
-  stage: debian:qa
-  variables:
-    APT_INSTALL_PACKAGES: autopkgtest eatmydata
-    GIT_STRATEGY: none
-  <<: *setup_prerequisites
-  script:
-    # Run autopkgtest to test full system integration: It runs the upstream test suite (and some additional tests)
-    # against the installed package.
-    # TODO: Set up LXC. This would allow to reboot the container in between tests, for example to test the sysvinit
-    # script as well.
-    - eatmydata autopkgtest results/*.dsc -- null
-  allow_failure: true
-
-debian:lintian:
-  stage: debian:qa
-  variables:
-    APT_INSTALL_PACKAGES: lintian
-    GIT_STRATEGY: none
-  <<: *setup_prerequisites
-  script:
-    # Run lintian, a tool used within Debian to check the package for errors and compliance with the Debian policy.
-    - lintian --allow-root --display-experimental --display-info --info --pedantic results/*.changes
-  allow_failure: true
-
-debian:piuparts:
-  stage: debian:qa
-  image: genericpipeline/piuparts-docker
-  services:
-    - docker:dind
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - CHROOT_PATH=/tmp/debian-unstable
-    - CONTAINER_ID=$(docker run --rm -d debian:unstable sleep infinity)
-    - docker exec ${CONTAINER_ID} bash -c "apt-get update"
-    - mkdir -p ${CHROOT_PATH}
-    - docker export ${CONTAINER_ID} | tar -C ${CHROOT_PATH} -xf -
-    - mknod -m 666 ${CHROOT_PATH}/dev/urandom c 1 9
-    - piuparts --hard-link -e ${CHROOT_PATH} results/*.deb
-  allow_failure: true
-
-# TODO: Introduce job to check package for reproducibility. Currently, the toolchain is still experimental: Using
-# reprotest, even with all variations disabled, makes the build fail.
+    - bundle-audit check --ignore CVE-2020-8161 CVE-2020-8165
