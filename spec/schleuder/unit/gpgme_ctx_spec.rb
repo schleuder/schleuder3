@@ -204,7 +204,7 @@ describe GPGME::Ctx do
 
       res = list.gpg.refresh_keys(list.keys)
 
-      expect(res).to match(/keyserver refresh failed: No keyserver available/)
+      expect(res).to match(/keyserver refresh failed: Connection refused/)
     end
 
     it 'does not import non-self-signatures' do
