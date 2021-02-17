@@ -34,7 +34,7 @@ describe Schleuder::Subscription do
     expect(subscription.errors.messages[:email]).to include("can't be blank")
   end
 
-   it 'is invalid when email is blank' do
+  it 'is invalid when email is blank' do
     list = create(:list)
     subscription = build(:subscription, list_id: list.id, email: '')
 
