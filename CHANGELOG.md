@@ -23,7 +23,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Allow only fingerprints as argument to X-DELETE-KEY. We want to reference keys only by fingerprint, if possible (as we do with other keywords already).
 * Drop deprecated X-LISTNAME keyword. (#374)
 * Downcase email addresses: Email addresses are downcased before saving.
-* Update the dependency 'activerecord' to version 6.0.
+* Update the dependency 'activerecord' to version 6.1.
 * Update the dependency 'factory_bot' to version 6.0.
 * Update the dependency 'sqlite3' to version 1.4.
 * Update the dependency 'database_cleaner' to version 2.0.
