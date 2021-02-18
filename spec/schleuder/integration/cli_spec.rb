@@ -79,7 +79,7 @@ describe 'cli' do
       dbfile = Conf.database['database']
       tmp_filename = "#{dbfile}.tmp"
       File.rename(dbfile, tmp_filename)
-      FileUtils.touch dbfile
+      IO.write(dbfile, 'bla')
       begin
         Cli.new.install
       rescue SystemExit => exc
