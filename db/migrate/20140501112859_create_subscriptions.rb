@@ -1,4 +1,4 @@
-class CreateSubscriptions < ActiveRecord::Migration[5.2]
+class CreateSubscriptions < ActiveRecord::Migration[4.2]
   def up
     if ! table_exists?(:subscriptions)
       create_table :subscriptions do |t|

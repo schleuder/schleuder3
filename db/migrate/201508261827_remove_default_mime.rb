@@ -1,4 +1,4 @@
-class RemoveDefaultMime < ActiveRecord::Migration[5.2]
+class RemoveDefaultMime < ActiveRecord::Migration[4.2]
   def up
     remove_column :lists, :default_mime
   end

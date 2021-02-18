@@ -1,4 +1,4 @@
-class FixHeadersToMetaDefaults < ActiveRecord::Migration[5.2]
+class FixHeadersToMetaDefaults < ActiveRecord::Migration[4.2]
   def up
     change_column_default :lists, :headers_to_meta, '["from", "to", "date", "cc"]'
   end

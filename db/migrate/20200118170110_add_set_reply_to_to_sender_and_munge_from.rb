@@ -1,4 +1,4 @@
-class AddSetReplyToToSenderAndMungeFrom < ActiveRecord::Migration
+class AddSetReplyToToSenderAndMungeFrom < ActiveRecord::Migration[4.2]
   def up
     if ! column_exists?(:lists, :set_reply_to_to_sender)
       add_column :lists, :set_reply_to_to_sender, :boolean, default: false

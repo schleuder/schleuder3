@@ -1,4 +1,4 @@
-class RenameDeliveryDisabledToDeliveryEnabledAndChangeDefault < ActiveRecord::Migration[5.2]
+class RenameDeliveryDisabledToDeliveryEnabledAndChangeDefault < ActiveRecord::Migration[4.2]
   def up
     if column_exists?(:subscriptions, :delivery_disabled)
       rename_column :subscriptions, :delivery_disabled, :delivery_enabled
