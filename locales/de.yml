@@ -35,15 +35,15 @@ de:
       <%{sendkey_email}>.
     message_unsigned: Emails an diese Adresse müssen mit einem OpenPGP-Schlüssel signiert sein.
     message_signature_unknown: |
-      Emails an diese Adresse müssen mit dem OpenPGP-Schlüssel signiert sein, der für
-      dein Abo eingetragen ist. Wenn du nicht weisst, welcher Schlüssel das ist, frage
+      Emails an diese Adresse müssen mit dem OpenPGP-Schlüssel signiert sein, der 
+      deiner Mitgliedschaft zugewiesen ist. Wenn du nicht weisst, welcher Schlüssel das ist, frage
       die Administrator/innen. Die erreichst du per Email an
       <%{owner_email}>.
       (Vorzugsweise verschlüssele die Email mit dem Schlüssel dieser Adresse:
       %{list_fingerprint}).
     message_unencrypted: Emails an diese Adresse müssen OpenPGP-konform verschlüsselt sein.
-    message_unauthenticated: Emails an diese Adresse müssen verschlüsselt und mit einem OpenPGP-Schlüssel signiert sein, der für ein Abo eingetragen ist.
-    message_sender_not_subscribed: Nur Absender mit Abo dürfen Emails an diese Adresse schicken.
+    message_unauthenticated: Emails an diese Adresse müssen verschlüsselt und mit einem OpenPGP-Schlüssel signiert sein, der für eine Mitgliedschaft eingetragen ist.
+    message_sender_not_subscribed: Nur Absender, die als Mitglied eingetragen sind, dürfen Emails an diese Adresse schicken.
     message_not_from_admin: Nur Admins dürfen Emails an diese Adresse schicken.
     message_empty: |
       Deine Email enthielt keinen Text, daher wurde sie nicht über die Liste verteilt.
@@ -140,26 +140,26 @@ de:
       unencrypted_to: Unverschlüsselt an
       invalid_recipient: "Ungültige Emailadresse für resend: %{address}"
     subscription_management:
-      forbidden: "Fehler: Du bist nicht berechtigt, das Abo für %{email} zu löschen."
-      is_not_subscribed: Kein Abo für %{email} gefunden.
-      unsubscribed: Abo für %{email} wurde gelöscht.
+      forbidden: "Fehler: Du bist nicht berechtigt, die Mitgliedschaft von %{email} zu beenden."
+      is_not_subscribed: Keine Mitgliedschaft von %{email} gefunden.
+      unsubscribed: Die Mitgliedschaft von %{email} wurde gelöscht.
       unsubscribing_failed: |
-        Abo für %{email} nicht gelöscht:
+        Mitgliedschaft von %{email} nicht gelöscht:
         %{errors}
       cannot_unsubscribe_last_admin: |
-        %{email} ist das einzige admin-Abo für diese Liste, daher kann es nicht gelöscht werden.
+        %{email} ist die einzige admin-Mitgliedschaft für diese Liste, daher darf sie nicht gelöscht werden.
       subscribed: |
-        Abo für %{email} mit diesen Werten eingetragen:
+        Mitgliedschaft von %{email} mit diesen Werten eingetragen:
 
         Fingerabdruck: %{fingerprint}
         Admin? %{admin}
         Email-Zustellung aktiv? %{delivery_enabled}
       subscribing_failed: |
-        Abo für %{email} nicht eingetragen:
+        Die Mitgliedschaft von %{email} konnte aufgrund eines Fehlers nicht eingetragen werden:
 
         %{errors}.
-      list_of_subscriptions: "Abos:\n"
-      set_fingerprint_only_self: Nur admins dürfen den Fingerabdruck für andere Abos festlegen.
+      list_of_subscriptions: "Mitgliedschaften:\n"
+      set_fingerprint_only_self: Nur admins dürfen den Fingerabdruck für andere Mitgliedschaften festlegen.
       fingerprint_set: Fingerabdruck für %{email} auf %{fingerprint} gesetzt.
       setting_fingerprint_failed: |
         Fingerabdruck für %{email} konnte nicht auf %{fingerprint} gesetzt werden:
@@ -188,7 +188,7 @@ de:
         X-SET-FINGERPRINT: subscription2@hostname 0xB3D190D5235C74E1907EACFE898F2C91E2E6E1F3
 
         Um einen Fingerprint zu entfernen kannst du das Schlüsselwort 'UNSET-FINGERPRINT' verwenden.
-      unset_fingerprint_only_self: Nur admins dürfen den Fingerabdruck für andere Abos festlegen.
+      unset_fingerprint_only_self: Nur admins dürfen den Fingerabdruck für andere Mitgliedschaften löschen.
       fingerprint_unset: Fingerabdruck für %{email} wurde entfernt.
       unsetting_fingerprint_failed: |
         Fingerabdruck für %{email} konnte nicht entfernt werden:
@@ -207,16 +207,16 @@ de:
         Mindestens ein Wert ist nötig, drei weitere sind optional. Bspw.:
         X-SUBSCRIBE: new-subscription@hostname
 
-        Oder, um den Schlüssel für das neue Abo zuzuweisen:
+        Oder, um den Schlüssel der neuen Mitgliedschaft zuzuweisen:
         X-SUBSCRIBE: new-subscription@hostname 0xB3D190D5235C74E1907EACFE898F2C91E2E6E1F3
 
-        Oder, um den Schlüssel zuzuweisen, und das Abo zum admin zu machen:
+        Oder, um den Schlüssel zuzuweisen, und die Mitgliedschaft als admin einzutragen:
         X-SUBSCRIBE: new-subscription@hostname 0xB3D190D5235C74E1907EACFE898F2C91E2E6E1F3 true
 
-        Oder, um den Schlüssel zuzuweisen, das Abo zum admin zu machen, und die Zustellung von Listen-Emails für dieses Abo abzuschalten:
+        Oder, um den Schlüssel zuzuweisen, die Mitgliedschaft als admin einzutragen, und die Zustellung von Listen-Emails für diese Mitgliedschaft abzuschalten:
         X-SUBSCRIBE: new-subscription@hostname 0xB3D190D5235C74E1907EACFE898F2C91E2E6E1F3 true false
 
-        Wenn du die optionalen Werte weglässt hat das Abo keinen Schlüssel zugewiesen, ist nicht admin, und hat die Zustellung von Listen-Email aktiviert.
+        Wenn du die optionalen Werte weglässt hat die Mitgliedschaft keinen Schlüssel zugewiesen, ist nicht admin, und hat die Zustellung von Listen-Email aktiviert.
     sign_this:
       signatures_attached: Die Signaturen hängen an.
       no_content_found: Deine Email enthielt keine Anhänge und keinen Text-Inhalt, daher konnte nichts signiert werden.
@@ -246,7 +246,7 @@ de:
   key_unusable: |
     Dieser Schlüssel ist %{usability_issue}:
     %{key_summary}
-  missed_message_due_to_unusable_key: "Du hast eine Email von %{list_email} verpasst weil mit deinem Abo kein (benutzbarer) OpenPGP-Schlüssel verknüpft ist. Bitte kümmere dich darum."
+  missed_message_due_to_unusable_key: "Du hast eine Email von %{list_email} verpasst weil deiner Mitgliedschaft kein (benutzbarer) OpenPGP-Schlüssel zugewiesen ist. Bitte kümmere dich darum."
   refresh_keys: Schlüsselaktualisierung
   refresh_keys_intro: "Die Aktualisierung aller Schlüssel des Schlüsselrings für Liste %{email} ergab dies:"
   key_updated: |
