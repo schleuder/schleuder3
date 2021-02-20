@@ -1,4 +1,7 @@
 ---
+default:
+  image: $IMAGE_REGISTRY:debian-generic
+
 stages:
   - test
   - static
@@ -8,13 +11,12 @@ variables:
 
 # Jobs that start with a period are disabled
 # This is just a template, to be used further below in the individual job definitions
-.limit_non_release_branches: &limit_non_release_branches
-  except:
-    - /^master/
-    - /^release.*/
-    - tags 
-  
 .test_ruby: &test_ruby
+  rules:
+    # Execute these jobs always, except for tags
+    - if: '$CI_COMMIT_TAG == null'
+      when: never
+    - when: always
   script:
     - eatmydata bundle install --jobs $(nproc)
     - SCHLEUDER_ENV=test SCHLEUDER_CONFIG=spec/schleuder.yml eatmydata bundle exec rake db:init
@@ -39,23 +41,23 @@ ruby:3.0:
   <<: *test_ruby
   
 changelog:
-  image: $IMAGE_REGISTRY:debian-generic
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      allow_failure: true
   script:
-    - source <(./utils/ci/get-target-branch.rb)
     # Ensure we work with the latest state
-    - git fetch origin $target_branch:$target_branch
+    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     # Compare the target and current branch using their common ancestors
     # to check if the changelog was edited
-    - if git diff --exit-code --quiet $target_branch...HEAD -- CHANGELOG.md; then
+    - if git diff --exit-code --quiet $CI_MERGE_REQUEST_TARGET_BRANCH_NAME...HEAD -- CHANGELOG.md; then
         echo "No CHANGELOG edit found, please verify manually";
         exit 1;
       fi
   stage: static
-  allow_failure: true
-  <<: *limit_non_release_branches
 
 codespell:
-  image: $IMAGE_REGISTRY:debian-generic
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
     # Run codespell to check for spelling errors, using a config with ignored
     # words, skipping files (German translations) and the code coverage dir
@@ -63,10 +65,10 @@ codespell:
     # finally, checking file names as well.
     - codespell -I utils/ci/codespell/ignored_words.txt -S ./.git,coverage,de.yml,fixtures -q 2 -f
   stage: static
-  <<: *limit_non_release_branches
 
 code-coverage:
-  image: $IMAGE_REGISTRY:debian-generic 
+  rules:
+    - if: '$CI_PROJECT_PATH == "schleuder/schleuder" && $CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
     - unset HISTFILE
     - eval $(ssh-agent -s)
@@ -86,24 +88,24 @@ code-coverage:
   environment:
     name: $DEPLOY_BASE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG
     url: https://schleuder.org/$DEPLOY_BASE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG
-  only:
-    - branches@schleuder/schleuder
   variables:
     DEPLOY_BASE: dev/code-coverage
     GIT_STRATEGY: none
-  allow_failure: true
   stage: static
-  <<: *limit_non_release_branches
 
 rubocop:
-  image: $IMAGE_REGISTRY:debian-generic
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
     - rubocop
   stage: static
-  <<: *limit_non_release_branches
 
 spec-filenames:
-  image: $IMAGE_REGISTRY:debian-generic
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - spec/schleuder/**/*
+        - spec/schleuder-api-daemon/**/*
   script:
     - cd spec/
     - if [[ -n $(find schleuder schleuder-api-daemon -type f -not -name '*_spec.rb') ]]; then
@@ -111,27 +113,20 @@ spec-filenames:
         exit 1;
       fi
   stage: static
-  allow_failure: true
-  only:
-    changes:
-      - spec/schleuder/**/*
-      - spec/schleuder-api-daemon/**/*
-  <<: *limit_non_release_branches
 
 schema-up-to-date:
-  image: $IMAGE_REGISTRY:debian-generic
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - db/**/*
   script:
     - ruby utils/ci/rails_schema_up_to_date.rb
   stage: static
-  only:
-    changes:
-      - db/*
-  <<: *limit_non_release_branches
 
 bundler:audit:
   image: ruby:2.5
-  only:
-    - schedules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
   script:
     - gem install bundler-audit --no-document
     - bundle install --jobs $(nproc) --path vendor
