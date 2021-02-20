@@ -123,7 +123,6 @@ schema-up-to-date:
   script:
     - ruby utils/ci/rails_schema_up_to_date.rb
   stage: static
-  allow_failure: true
   only:
     changes:
       - db/*
